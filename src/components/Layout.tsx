@@ -1,4 +1,4 @@
-import { Outlet, Routes, Route, useLocation } from "react-router-dom";
+import { Outlet, Routes, Route, useLocation, Link } from "react-router-dom";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,7 @@ import AdminDashboard from "../pages/AdminDashboard";
 import TrainingCenter from "../pages/TrainingCenter";
 import CourseView from "../pages/CourseView";
 import AssessmentCenter from "../pages/AssessmentCenter";
+import UserProfile from "../pages/UserProfile";
 
 const Layout = () => {
   const location = useLocation();
@@ -40,8 +41,10 @@ const Layout = () => {
             <Button variant="ghost" size="sm">
               <Settings className="h-4 w-4" />
             </Button>
-            <Button variant="ghost" size="sm">
-              <User className="h-4 w-4" />
+            <Button variant="ghost" size="sm" asChild>
+              <Link to={`/${currentRole}/profile`}>
+                <User className="h-4 w-4" />
+              </Link>
             </Button>
           </div>
         </header>
@@ -56,6 +59,7 @@ const Layout = () => {
                 <Route path="training" element={<TrainingCenter />} />
                 <Route path="training/course/:id" element={<CourseView />} />
                 <Route path="assessments" element={<AssessmentCenter />} />
+                <Route path="profile" element={<UserProfile />} />
                 <Route path="ai-guru" element={<div className="p-6"><h1 className="text-2xl font-bold">AI Guru</h1><p>Coming soon...</p></div>} />
                 <Route path="certificates" element={<div className="p-6"><h1 className="text-2xl font-bold">Certificates</h1><p>Coming soon...</p></div>} />
               </>
@@ -66,6 +70,7 @@ const Layout = () => {
               <>
                 <Route index element={<ManagerDashboard />} />
                 <Route path="team" element={<div className="p-6"><h1 className="text-2xl font-bold">Team Management</h1><p>Coming soon...</p></div>} />
+                <Route path="profile" element={<UserProfile />} />
                 <Route path="reports" element={<div className="p-6"><h1 className="text-2xl font-bold">Reports</h1><p>Coming soon...</p></div>} />
                 <Route path="analytics" element={<div className="p-6"><h1 className="text-2xl font-bold">Analytics</h1><p>Coming soon...</p></div>} />
               </>
@@ -76,6 +81,7 @@ const Layout = () => {
               <>
                 <Route index element={<AdminDashboard />} />
                 <Route path="content" element={<div className="p-6"><h1 className="text-2xl font-bold">Content Management</h1><p>Coming soon...</p></div>} />
+                <Route path="profile" element={<UserProfile />} />
                 <Route path="users" element={<div className="p-6"><h1 className="text-2xl font-bold">User Management</h1><p>Coming soon...</p></div>} />
                 <Route path="analytics" element={<div className="p-6"><h1 className="text-2xl font-bold">System Analytics</h1><p>Coming soon...</p></div>} />
                 <Route path="settings" element={<div className="p-6"><h1 className="text-2xl font-bold">Settings</h1><p>Coming soon...</p></div>} />
