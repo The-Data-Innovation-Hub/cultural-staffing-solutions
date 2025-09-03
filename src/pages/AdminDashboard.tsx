@@ -67,7 +67,7 @@ const AdminDashboard = () => {
           <Card key={index} className="shadow-card border-0">
             <CardContent className="p-6">
               <div className="flex items-center gap-4">
-                <div className="p-3 bg-css-gold-light rounded-lg">
+                <div className="p-3 bg-blue-100 rounded-lg">
                   <stat.icon className="h-6 w-6 text-css-gold" />
                 </div>
                 <div>
