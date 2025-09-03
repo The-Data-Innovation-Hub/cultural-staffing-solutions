@@ -52,6 +52,11 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				'css-gold': 'hsl(var(--css-gold))',
+				'css-gold-light': 'hsl(var(--css-gold-light))',
+				'css-black': 'hsl(var(--css-black))',
+				'css-grey-light': 'hsl(var(--css-grey-light))',
+				'css-white': 'hsl(var(--css-white))',
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
@@ -62,6 +67,14 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				}
+			},
+			backgroundImage: {
+				'gradient-gold': 'var(--gradient-gold)',
+				'gradient-dark': 'var(--gradient-dark)',
+			},
+			boxShadow: {
+				'card': 'var(--shadow-card)',
+				'gold': 'var(--shadow-gold)',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
