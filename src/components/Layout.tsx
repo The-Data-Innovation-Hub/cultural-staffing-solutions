@@ -1,10 +1,19 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, Routes, Route, useLocation } from "react-router-dom";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { Button } from "@/components/ui/button";
 import { Bell, Settings, User } from "lucide-react";
+import EmployeeDashboard from "../pages/EmployeeDashboard";
+import ManagerDashboard from "../pages/ManagerDashboard";
+import AdminDashboard from "../pages/AdminDashboard";
+import TrainingCenter from "../pages/TrainingCenter";
+import CourseView from "../pages/CourseView";
+import AssessmentCenter from "../pages/AssessmentCenter";
 
 const Layout = () => {
+  const location = useLocation();
+  const currentRole = location.pathname.split('/')[1];
+
   return (
     <div className="min-h-screen flex w-full bg-background">
       <AppSidebar />
@@ -39,7 +48,40 @@ const Layout = () => {
         
         {/* Main Content */}
         <main className="flex-1 overflow-auto">
-          <Outlet />
+          <Routes>
+            {/* Employee Routes */}
+            {currentRole === 'employee' && (
+              <>
+                <Route index element={<EmployeeDashboard />} />
+                <Route path="training" element={<TrainingCenter />} />
+                <Route path="training/course/:id" element={<CourseView />} />
+                <Route path="assessments" element={<AssessmentCenter />} />
+                <Route path="ai-guru" element={<div className="p-6"><h1 className="text-2xl font-bold">AI Guru</h1><p>Coming soon...</p></div>} />
+                <Route path="certificates" element={<div className="p-6"><h1 className="text-2xl font-bold">Certificates</h1><p>Coming soon...</p></div>} />
+              </>
+            )}
+            
+            {/* Manager Routes */}
+            {currentRole === 'manager' && (
+              <>
+                <Route index element={<ManagerDashboard />} />
+                <Route path="team" element={<div className="p-6"><h1 className="text-2xl font-bold">Team Management</h1><p>Coming soon...</p></div>} />
+                <Route path="reports" element={<div className="p-6"><h1 className="text-2xl font-bold">Reports</h1><p>Coming soon...</p></div>} />
+                <Route path="analytics" element={<div className="p-6"><h1 className="text-2xl font-bold">Analytics</h1><p>Coming soon...</p></div>} />
+              </>
+            )}
+            
+            {/* Admin Routes */}
+            {currentRole === 'admin' && (
+              <>
+                <Route index element={<AdminDashboard />} />
+                <Route path="content" element={<div className="p-6"><h1 className="text-2xl font-bold">Content Management</h1><p>Coming soon...</p></div>} />
+                <Route path="users" element={<div className="p-6"><h1 className="text-2xl font-bold">User Management</h1><p>Coming soon...</p></div>} />
+                <Route path="analytics" element={<div className="p-6"><h1 className="text-2xl font-bold">System Analytics</h1><p>Coming soon...</p></div>} />
+                <Route path="settings" element={<div className="p-6"><h1 className="text-2xl font-bold">Settings</h1><p>Coming soon...</p></div>} />
+              </>
+            )}
+          </Routes>
         </main>
       </div>
     </div>
