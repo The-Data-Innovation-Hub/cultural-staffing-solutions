@@ -10,7 +10,8 @@ import {
   MessageCircle,
   PieChart,
   Upload,
-  UserCog
+  UserCog,
+  User
 } from "lucide-react";
 
 import {
@@ -32,6 +33,7 @@ const employeeNavItems = [
   { title: "Assessments", url: "/employee/assessments", icon: GraduationCap },
   { title: "AI Guru", url: "/employee/ai-guru", icon: MessageCircle },
   { title: "Certificates", url: "/employee/certificates", icon: Award },
+  { title: "Profile", url: "/employee/profile", icon: User },
 ];
 
 const managerNavItems = [
@@ -39,6 +41,7 @@ const managerNavItems = [
   { title: "Team Management", url: "/manager/team", icon: Users },
   { title: "Reports", url: "/manager/reports", icon: FileText },
   { title: "Analytics", url: "/manager/analytics", icon: PieChart },
+  { title: "Profile", url: "/manager/profile", icon: User },
 ];
 
 const adminNavItems = [
@@ -47,6 +50,7 @@ const adminNavItems = [
   { title: "User Management", url: "/admin/users", icon: UserCog },
   { title: "System Analytics", url: "/admin/analytics", icon: PieChart },
   { title: "Settings", url: "/admin/settings", icon: Settings },
+  { title: "Profile", url: "/admin/profile", icon: User },
 ];
 
 export function AppSidebar() {
