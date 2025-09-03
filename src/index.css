@@ -21,7 +21,7 @@ Fonts: Montserrat Bold, Neutrif Pro Medium
     --popover-foreground: 0 0% 9%;
 
     /* Brand Colors */
-    --primary: 0 0% 9%; /* Black #171717 */
+    --primary: 25 95% 53%; /* Orange */
     --primary-foreground: 210 20% 98%;
 
     --secondary: 210 17% 95%; /* Light Grey #F1F3F5 */
@@ -87,8 +87,8 @@ Fonts: Montserrat Bold, Neutrif Pro Medium
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 25 95% 53%; /* Orange */
+    --primary-foreground: 0 0% 100%;
 
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
