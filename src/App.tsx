@@ -26,6 +26,10 @@ const App = () => (
           <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />
           
+          {/* Direct Access Routes */}
+          <Route path="/assessment" element={<AssessmentCenter />} />
+          <Route path="/assessments" element={<AssessmentCenter />} />
+          
           {/* Employee Routes */}
           <Route path="/employee/*" element={
             <SidebarProvider>
