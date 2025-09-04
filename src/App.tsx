@@ -6,6 +6,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import Layout from "./components/Layout";
 import Login from "./pages/Login";
+import LandingPage from "./pages/LandingPage";
+import ProtectedRoute from "./components/ProtectedRoute";
 import EmployeeDashboard from "./pages/EmployeeDashboard";
 import ManagerDashboard from "./pages/ManagerDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -23,8 +25,8 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login/*" element={<Login />} />
           
           {/* Direct Access Routes */}
           <Route path="/assessment" element={<AssessmentCenter />} />
@@ -32,23 +34,29 @@ const App = () => (
           
           {/* Employee Routes */}
           <Route path="/employee/*" element={
-            <SidebarProvider>
-              <Layout />
-            </SidebarProvider>
+            <ProtectedRoute>
+              <SidebarProvider>
+                <Layout />
+              </SidebarProvider>
+            </ProtectedRoute>
           } />
           
           {/* Manager Routes */}
           <Route path="/manager/*" element={
-            <SidebarProvider>
-              <Layout />
-            </SidebarProvider>
+            <ProtectedRoute allowedRoles={['manager', 'admin']}>
+              <SidebarProvider>
+                <Layout />
+              </SidebarProvider>
+            </ProtectedRoute>
           } />
           
           {/* Admin Routes */}
           <Route path="/admin/*" element={
-            <SidebarProvider>
-              <Layout />
-            </SidebarProvider>
+            <ProtectedRoute allowedRoles={['admin']}>
+              <SidebarProvider>
+                <Layout />
+              </SidebarProvider>
+            </ProtectedRoute>
           } />
           
           <Route path="*" element={<NotFound />} />

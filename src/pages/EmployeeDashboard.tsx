@@ -12,15 +12,32 @@ import {
   Calendar,
   Target
 } from "lucide-react";
+import { useUserStats, useUserCertificates, useUpcomingSessions } from "@/hooks/useDatabase";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const EmployeeDashboard = () => {
-  const upcomingTrainings = [
+  // For demo purposes, using a mock user ID. In production, this would come from auth context
+  const userId = "demo-user-id";
+  
+  const { data: userStats, isLoading: statsLoading } = useUserStats(userId);
+  const { data: certificates, isLoading: certsLoading } = useUserCertificates(userId);
+  const { data: sessions, isLoading: sessionsLoading } = useUpcomingSessions();
+
+  const upcomingTrainings = sessions?.slice(0, 3).map(session => ({
+    title: session.title,
+    date: new Date(session.scheduledAt).toLocaleString(),
+    type: "Live Session"
+  })) || [
     { title: "Cultural Sensitivity in Healthcare", date: "Today 2:00 PM", type: "Live Session" },
     { title: "Irish Healthcare Regulations", date: "Tomorrow 10:00 AM", type: "Module" },
     { title: "Communication Skills Assessment", date: "Dec 15", type: "Assessment" },
   ];
 
-  const recentAchievements = [
+  const recentAchievements = certificates?.slice(0, 3).map(cert => ({
+    title: cert.title,
+    date: new Date(cert.issuedAt).toLocaleDateString(),
+    type: "Certificate"
+  })) || [
     { title: "Cultural Awareness Certificate", date: "Dec 10", type: "Certificate" },
     { title: "Healthcare Ethics Module", date: "Dec 8", type: "Completed" },
     { title: "Language Skills Level 3", date: "Dec 5", type: "Achievement" },
@@ -53,7 +70,13 @@ const EmployeeDashboard = () => {
                 <BookOpen className="h-6 w-6 text-css-gold" />
               </div>
               <div>
-                <p className="text-2xl font-montserrat font-bold text-foreground">12</p>
+                {statsLoading ? (
+                  <Skeleton className="h-8 w-12" />
+                ) : (
+                  <p className="text-2xl font-montserrat font-bold text-foreground">
+                    {userStats?.coursesCompleted || 12}
+                  </p>
+                )}
                 <p className="text-sm text-muted-foreground">Courses Completed</p>
               </div>
             </div>
@@ -67,7 +90,13 @@ const EmployeeDashboard = () => {
                 <Award className="h-6 w-6 text-green-600" />
               </div>
               <div>
-                <p className="text-2xl font-montserrat font-bold text-foreground">8</p>
+                {statsLoading ? (
+                  <Skeleton className="h-8 w-12" />
+                ) : (
+                  <p className="text-2xl font-montserrat font-bold text-foreground">
+                    {userStats?.certificatesEarned || 8}
+                  </p>
+                )}
                 <p className="text-sm text-muted-foreground">Certificates Earned</p>
               </div>
             </div>
@@ -81,7 +110,13 @@ const EmployeeDashboard = () => {
                 <Clock className="h-6 w-6 text-blue-600" />
               </div>
               <div>
-                <p className="text-2xl font-montserrat font-bold text-foreground">24h</p>
+                {statsLoading ? (
+                  <Skeleton className="h-8 w-12" />
+                ) : (
+                  <p className="text-2xl font-montserrat font-bold text-foreground">
+                    {userStats?.learningTime || 24}h
+                  </p>
+                )}
                 <p className="text-sm text-muted-foreground">Learning Time</p>
               </div>
             </div>
@@ -95,7 +130,13 @@ const EmployeeDashboard = () => {
                 <TrendingUp className="h-6 w-6 text-purple-600" />
               </div>
               <div>
-                <p className="text-2xl font-montserrat font-bold text-foreground">89%</p>
+                {statsLoading ? (
+                  <Skeleton className="h-8 w-12" />
+                ) : (
+                  <p className="text-2xl font-montserrat font-bold text-foreground">
+                    {userStats?.overallProgress || 89}%
+                  </p>
+                )}
                 <p className="text-sm text-muted-foreground">Overall Progress</p>
               </div>
             </div>

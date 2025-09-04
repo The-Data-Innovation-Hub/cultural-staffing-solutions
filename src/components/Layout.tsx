@@ -10,6 +10,8 @@ import TrainingCenter from "../pages/TrainingCenter";
 import CourseView from "../pages/CourseView";
 import AssessmentCenter from "../pages/AssessmentCenter";
 import UserProfile from "../pages/UserProfile";
+import AIGuru from "../pages/employee/AIGuru";
+import Certificates from "../pages/employee/Certificates";
 
 const Layout = () => {
   const location = useLocation();
@@ -35,13 +37,13 @@ const Layout = () => {
           </div>
           
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="icon" className="h-9 w-9">
               <Bell className="h-4 w-4" />
             </Button>
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="icon" className="h-9 w-9">
               <Settings className="h-4 w-4" />
             </Button>
-            <Button variant="ghost" size="sm" asChild>
+            <Button variant="ghost" size="icon" className="h-9 w-9" asChild>
               <Link to={`/${currentRole}/profile`}>
                 <User className="h-4 w-4" />
               </Link>
@@ -60,8 +62,8 @@ const Layout = () => {
                 <Route path="training/course/:id" element={<CourseView />} />
                 <Route path="assessments" element={<AssessmentCenter />} />
                 <Route path="profile" element={<UserProfile />} />
-                <Route path="ai-guru" element={<div className="p-6"><h1 className="text-2xl font-bold">AI Guru</h1><p>Coming soon...</p></div>} />
-                <Route path="certificates" element={<div className="p-6"><h1 className="text-2xl font-bold">Certificates</h1><p>Coming soon...</p></div>} />
+                <Route path="ai-guru" element={<AIGuru />} />
+                <Route path="certificates" element={<Certificates />} />
               </>
             )}
             

@@ -18,8 +18,8 @@ const TrainingCenter = () => {
   const courses = [
     {
       id: 1,
-      title: "Irish Healthcare System Overview",
-      description: "Comprehensive introduction to healthcare delivery in Ireland",
+      title: "Northern Ireland Healthcare System Overview",
+      description: "Comprehensive introduction to healthcare delivery in Northern Ireland",
       modules: 6,
       duration: "4 hours",
       difficulty: "Beginner",
@@ -54,8 +54,8 @@ const TrainingCenter = () => {
     },
     {
       id: 4,
-      title: "Irish Healthcare Regulations & Compliance",
-      description: "Legal requirements and professional standards in Irish healthcare",
+      title: "Northern Ireland Healthcare Regulations & Compliance",
+      description: "Legal requirements and professional standards in Northern Ireland healthcare",
       modules: 10,
       duration: "7 hours",
       difficulty: "Advanced",
@@ -79,7 +79,7 @@ const TrainingCenter = () => {
     {
       id: 6,
       title: "Emergency Procedures & Protocols",
-      description: "Critical emergency response procedures in Irish healthcare settings",
+      description: "Critical emergency response procedures in Northern Ireland healthcare settings",
       modules: 9,
       duration: "5 hours",
       difficulty: "Advanced",

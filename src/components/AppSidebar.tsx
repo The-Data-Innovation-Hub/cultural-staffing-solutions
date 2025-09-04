@@ -1,4 +1,4 @@
-import { useLocation, NavLink } from "react-router-dom";
+import { useLocation, NavLink, useNavigate } from "react-router-dom";
 import { 
   BookOpen, 
   GraduationCap, 
@@ -11,7 +11,8 @@ import {
   PieChart,
   Upload,
   UserCog,
-  User
+  User,
+  LogOut
 } from "lucide-react";
 
 import {
@@ -23,8 +24,15 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarFooter,
+  SidebarHeader,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Separator } from "@/components/ui/separator";
+
+import { useUser, useClerk } from "@clerk/clerk-react";
 
 // Navigation items for different roles
 const employeeNavItems = [
@@ -56,6 +64,11 @@ const adminNavItems = [
 export function AppSidebar() {
   const { state } = useSidebar();
   const location = useLocation();
+  const navigate = useNavigate();
+  const { signOut } = useClerk();
+  
+  // Get user from Clerk
+  const { user } = useUser();
   
   const isCollapsed = state === "collapsed";
   
@@ -73,6 +86,21 @@ export function AppSidebar() {
     roleLabel = "Administrator";
   }
   
+  // Extract user data from Clerk
+  const userData = {
+    name: user?.fullName || `${user?.firstName} ${user?.lastName}` || user?.username || "User",
+    email: user?.primaryEmailAddress?.emailAddress || "",
+    role: (user?.publicMetadata?.role as string) || roleLabel,
+    imageUrl: user?.imageUrl,
+  };
+  
+  const initials = userData.name
+    .split(' ')
+    .map(n => n[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+  
   const isActive = (path: string) => {
     if (path.endsWith(`/${currentRole}`)) {
       return location.pathname === path;
@@ -80,15 +108,41 @@ export function AppSidebar() {
     return location.pathname.startsWith(path);
   };
 
+  const handleLogout = async () => {
+    await signOut();
+    navigate('/');
+  };
+
   return (
     <Sidebar 
       className={`border-r border-border bg-card`}
       collapsible="icon"
     >
-      <SidebarContent className="pt-4">
+      <SidebarHeader className="border-b border-border">
+        <div className="flex items-center gap-3 p-4">
+          <Avatar className="h-10 w-10">
+            <AvatarImage src={userData.imageUrl} alt={userData.name} />
+            <AvatarFallback className="bg-gradient-gold text-css-black font-bold">
+              {initials}
+            </AvatarFallback>
+          </Avatar>
+          {!isCollapsed && (
+            <div className="flex-1 min-w-0">
+              <p className="font-montserrat font-semibold text-sm text-foreground truncate">
+                {userData.name}
+              </p>
+              <p className="text-xs text-muted-foreground capitalize">
+                {userData.role}
+              </p>
+            </div>
+          )}
+        </div>
+      </SidebarHeader>
+      
+      <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel className="px-4 py-2 text-muted-foreground font-montserrat font-medium">
-            {!isCollapsed && roleLabel + " Portal"}
+            {!isCollapsed && "Navigation"}
           </SidebarGroupLabel>
           
           <SidebarGroupContent>
@@ -121,6 +175,23 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      
+      <SidebarFooter className="border-t border-border p-2">
+        <Button
+          onClick={handleLogout}
+          variant="ghost"
+          className={`
+            w-full justify-start gap-3 px-3 py-3 rounded-lg
+            text-muted-foreground hover:text-foreground hover:bg-destructive/10
+            transition-colors duration-200
+          `}
+        >
+          <LogOut className="h-5 w-5 shrink-0" />
+          {!isCollapsed && (
+            <span className="font-montserrat font-medium">Logout</span>
+          )}
+        </Button>
+      </SidebarFooter>
     </Sidebar>
   );
 }
