@@ -1,3 +1,4 @@
+import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -15,6 +16,8 @@ import {
 } from "lucide-react";
 
 const TrainingCenter = () => {
+  const [selectedCategory, setSelectedCategory] = useState("All Courses");
+  const [searchQuery, setSearchQuery] = useState("");
   const courses = [
     {
       id: 1,
@@ -100,6 +103,22 @@ const TrainingCenter = () => {
     "Emergency Care"
   ];
 
+  // Filter courses based on search and category
+  const filteredCourses = useMemo(() => {
+    return courses.filter(course => {
+      // Filter by category
+      const categoryMatch = selectedCategory === "All Courses" || course.category === selectedCategory;
+      
+      // Filter by search query
+      const searchMatch = searchQuery === "" || 
+        course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        course.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        course.category.toLowerCase().includes(searchQuery.toLowerCase());
+      
+      return categoryMatch && searchMatch;
+    });
+  }, [selectedCategory, searchQuery]);
+
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
       case 'Beginner': return 'bg-green-100 text-green-700';
@@ -138,16 +157,19 @@ const TrainingCenter = () => {
               <Input 
                 placeholder="Search courses..." 
                 className="pl-10"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
             <div className="flex gap-2 overflow-x-auto">
-              {categories.map((category, index) => (
+              {categories.map((category) => (
                 <Button
-                  key={index}
-                  variant={index === 0 ? "default" : "outline"}
+                  key={category}
+                  variant={selectedCategory === category ? "default" : "outline"}
                   size="sm"
+                  onClick={() => setSelectedCategory(category)}
                   className={`whitespace-nowrap ${
-                    index === 0 
+                    selectedCategory === category 
                       ? 'bg-gradient-gold text-css-black hover:bg-css-gold' 
                       : 'hover:bg-accent/10'
                   }`}
@@ -162,7 +184,8 @@ const TrainingCenter = () => {
 
       {/* Course Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {courses.map((course) => {
+        {filteredCourses.length > 0 ? (
+          filteredCourses.map((course) => {
           const status = getProgressStatus(course.progress);
           
           return (
@@ -248,7 +271,31 @@ const TrainingCenter = () => {
               </CardContent>
             </Card>
           );
-        })}
+        })
+        ) : (
+          <Card className="col-span-full shadow-card border-0">
+            <CardContent className="p-12 text-center">
+              <div className="flex flex-col items-center gap-4">
+                <BookOpen className="h-12 w-12 text-muted-foreground" />
+                <div>
+                  <h3 className="font-montserrat font-bold text-lg">No courses found</h3>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Try adjusting your search or filter criteria
+                  </p>
+                </div>
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    setSearchQuery("");
+                    setSelectedCategory("All Courses");
+                  }}
+                >
+                  Clear filters
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
 
       {/* Learning Path Suggestion */}

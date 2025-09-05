@@ -14,8 +14,10 @@ import {
 } from "lucide-react";
 import { useUserStats, useUserCertificates, useUpcomingSessions } from "@/hooks/useDatabase";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useNavigate } from "react-router-dom";
 
 const EmployeeDashboard = () => {
+  const navigate = useNavigate();
   // For demo purposes, using a mock user ID. In production, this would come from auth context
   const userId = "demo-user-id";
   
@@ -55,7 +57,10 @@ const EmployeeDashboard = () => {
             Continue your learning journey in Irish healthcare
           </p>
         </div>
-        <Button className="bg-gradient-gold text-css-black hover:bg-css-gold font-montserrat font-bold">
+        <Button 
+          onClick={() => navigate('/employee/ai-guru')}
+          className="bg-gradient-gold text-css-black hover:bg-css-gold font-montserrat font-bold"
+        >
           <MessageCircle className="mr-2 h-4 w-4" />
           Ask AI Guru
         </Button>

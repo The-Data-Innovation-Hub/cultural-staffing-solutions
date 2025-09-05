@@ -34,6 +34,15 @@ const Login = () => {
           </div>
         </div>
 
+        <div className="bg-white/80 backdrop-blur-sm rounded-lg p-4 mb-4 border border-css-gold/20 max-w-sm">
+          <h3 className="font-montserrat font-semibold text-sm mb-2 text-css-black">Demo Credentials:</h3>
+          <div className="space-y-1 text-xs text-css-grey-dark font-lato">
+            <p><span className="font-semibold">Employee:</span> employee@culturalstaffing.com / password123</p>
+            <p><span className="font-semibold">Manager:</span> manager@culturalstaffing.com / password123</p>
+            <p><span className="font-semibold">Admin:</span> admin@culturalstaffing.com / password123</p>
+          </div>
+        </div>
+
         <SignIn 
           routing="path"
           path="/login"
