@@ -2,9 +2,15 @@ import OpenAI from 'openai';
 
 const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
 
+// Debug logging for production
+if (import.meta.env.PROD) {
+  console.log('OpenAI API Key status:', apiKey ? `Present (length: ${apiKey.length})` : 'Missing');
+  console.log('Environment mode:', import.meta.env.MODE);
+}
+
 let openaiClient: OpenAI | null = null;
 
-if (apiKey && apiKey !== 'your_openai_api_key_here') {
+if (apiKey && apiKey !== 'your_openai_api_key_here' && apiKey.trim().length > 0) {
   openaiClient = new OpenAI({
     apiKey: apiKey,
     dangerouslyAllowBrowser: true
@@ -59,5 +65,5 @@ export const chatWithGPT = async (messages: ChatMessage[]): Promise<string> => {
 };
 
 export const isOpenAIConfigured = (): boolean => {
-  return apiKey !== undefined && apiKey !== 'your_openai_api_key_here' && apiKey.length > 0;
+  return apiKey !== undefined && apiKey !== 'your_openai_api_key_here' && apiKey !== '' && apiKey.trim().length > 0;
 };
