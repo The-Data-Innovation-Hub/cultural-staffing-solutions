@@ -12,6 +12,7 @@ import AssessmentCenter from "../pages/AssessmentCenter";
 import UserProfile from "../pages/UserProfile";
 import AIGuru from "../pages/employee/AIGuru";
 import Certificates from "../pages/employee/Certificates";
+import WaitlistManagement from "../pages/admin/WaitlistManagement";
 
 const Layout = () => {
   const location = useLocation();
@@ -27,9 +28,11 @@ const Layout = () => {
           <div className="flex items-center gap-4">
             <SidebarTrigger />
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-gold rounded-lg flex items-center justify-center">
-                <span className="text-css-black font-bold text-sm">CSS</span>
-              </div>
+              <img
+                src="/cultural-staffing-logo.png"
+                alt="Cultural Staffing Solutions"
+                className="h-10 w-auto object-contain"
+              />
               <h1 className="font-montserrat font-bold text-lg text-foreground">
                 Cultural Staffing Solutions
               </h1>
@@ -82,6 +85,7 @@ const Layout = () => {
             {currentRole === 'admin' && (
               <>
                 <Route index element={<AdminDashboard />} />
+                <Route path="waitlist" element={<WaitlistManagement />} />
                 <Route path="content" element={<div className="p-6"><h1 className="text-2xl font-bold">Content Management</h1><p>Coming soon...</p></div>} />
                 <Route path="profile" element={<UserProfile />} />
                 <Route path="users" element={<div className="p-6"><h1 className="text-2xl font-bold">User Management</h1><p>Coming soon...</p></div>} />

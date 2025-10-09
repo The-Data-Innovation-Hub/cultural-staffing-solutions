@@ -32,14 +32,14 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 
-import { useUser, useClerk } from "@clerk/clerk-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 // Navigation items for different roles
 const employeeNavItems = [
   { title: "Dashboard", url: "/employee", icon: BarChart3 },
   { title: "Training Center", url: "/employee/training", icon: BookOpen },
   { title: "Assessments", url: "/employee/assessments", icon: GraduationCap },
-  { title: "AI Guru", url: "/employee/ai-guru", icon: MessageCircle },
+  { title: "Clinify AI", url: "/employee/ai-guru", icon: MessageCircle },
   { title: "Certificates", url: "/employee/certificates", icon: Award },
   { title: "Profile", url: "/employee/profile", icon: User },
 ];
@@ -54,6 +54,7 @@ const managerNavItems = [
 
 const adminNavItems = [
   { title: "Dashboard", url: "/admin", icon: BarChart3 },
+  { title: "Waitlist", url: "/admin/waitlist", icon: Users },
   { title: "Content Management", url: "/admin/content", icon: Upload },
   { title: "User Management", url: "/admin/users", icon: UserCog },
   { title: "System Analytics", url: "/admin/analytics", icon: PieChart },
@@ -65,10 +66,7 @@ export function AppSidebar() {
   const { state } = useSidebar();
   const location = useLocation();
   const navigate = useNavigate();
-  const { signOut } = useClerk();
-  
-  // Get user from Clerk
-  const { user } = useUser();
+  const { user, signOut } = useAuth();
   
   const isCollapsed = state === "collapsed";
   
@@ -86,21 +84,21 @@ export function AppSidebar() {
     roleLabel = "Administrator";
   }
   
-  // Extract user data from Clerk
+  // Extract user data
   const userData = {
-    name: user?.fullName || `${user?.firstName} ${user?.lastName}` || user?.username || "User",
-    email: user?.primaryEmailAddress?.emailAddress || "",
-    role: (user?.publicMetadata?.role as string) || roleLabel,
-    imageUrl: user?.imageUrl,
+    name: `${user?.firstName || ''} ${user?.lastName || ''}`.trim() || "User",
+    email: user?.email || "",
+    role: user?.role || roleLabel,
+    imageUrl: user?.profileImage,
   };
-  
+
   const initials = userData.name
     .split(' ')
-    .map(n => n[0])
+    .map((n: string) => n[0])
     .join('')
     .toUpperCase()
     .slice(0, 2);
-  
+
   const isActive = (path: string) => {
     if (path.endsWith(`/${currentRole}`)) {
       return location.pathname === path;
@@ -108,8 +106,8 @@ export function AppSidebar() {
     return location.pathname.startsWith(path);
   };
 
-  const handleLogout = async () => {
-    await signOut();
+  const handleLogout = () => {
+    signOut();
     navigate('/');
   };
 

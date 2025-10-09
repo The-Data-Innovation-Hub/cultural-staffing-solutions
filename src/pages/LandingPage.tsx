@@ -23,9 +23,12 @@ import {
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { IMAGES, getImage } from "@/config/images";
+import { WaitlistForm } from "@/components/WaitlistForm";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 const LandingPage = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [waitlistModalOpen, setWaitlistModalOpen] = useState(false);
 
   const stats = [
     { value: "500+", label: "Healthcare Professionals Trained" },
@@ -126,18 +129,7 @@ const LandingPage = () => {
       {/* Navigation */}
       <nav className="fixed top-0 w-full bg-background/95 backdrop-blur-md z-50 border-b">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-gradient-gold rounded-xl flex items-center justify-center shadow-gold">
-                <span className="text-css-black font-montserrat font-bold text-sm">CSS</span>
-              </div>
-              <div>
-                <h1 className="font-montserrat font-bold text-lg text-foreground">
-                  Cultural Staffing Solutions
-                </h1>
-              </div>
-            </div>
-
+          <div className="flex items-center justify-center h-16 w-full">
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-8">
               <a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">
@@ -152,9 +144,15 @@ const LandingPage = () => {
               <a href="#contact" className="text-muted-foreground hover:text-foreground transition-colors">
                 Contact
               </a>
-              <Button asChild className="bg-gradient-gold text-css-black hover:bg-css-gold font-montserrat font-bold">
+              <Button
+                onClick={() => setWaitlistModalOpen(true)}
+                className="bg-gradient-gold text-css-black hover:bg-css-gold font-montserrat font-bold"
+              >
+                Join Waitlist <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+              <Button asChild variant="outline" size="sm" className="font-montserrat">
                 <Link to="/login">
-                  Login <ArrowRight className="ml-2 h-4 w-4" />
+                  Login
                 </Link>
               </Button>
             </div>
@@ -184,9 +182,18 @@ const LandingPage = () => {
                 <a href="#contact" className="text-muted-foreground hover:text-foreground transition-colors">
                   Contact
                 </a>
-                <Button asChild className="bg-gradient-gold text-css-black hover:bg-css-gold font-montserrat font-bold w-full">
+                <Button
+                  onClick={() => {
+                    setWaitlistModalOpen(true);
+                    setMobileMenuOpen(false);
+                  }}
+                  className="bg-gradient-gold text-css-black hover:bg-css-gold font-montserrat font-bold w-full"
+                >
+                  Join Waitlist <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+                <Button asChild variant="outline" className="font-montserrat w-full">
                   <Link to="/login">
-                    Login <ArrowRight className="ml-2 h-4 w-4" />
+                    Login
                   </Link>
                 </Button>
               </div>
@@ -199,14 +206,21 @@ const LandingPage = () => {
       <section className="pt-32 pb-20 px-4 bg-gradient-to-br from-css-white via-background to-css-grey-light relative overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
-          <img 
-            src={getImage('hero.background', { width: 1920, height: 1080, quality: 85 })} 
-            alt="Healthcare professionals" 
+          <img
+            src={getImage('hero.background', { width: 1920, height: 1080, quality: 85 })}
+            alt="Healthcare professionals"
             className="w-full h-full object-cover opacity-10"
           />
         </div>
         <div className="container mx-auto max-w-6xl relative z-10">
           <div className="text-center space-y-6">
+            <div className="flex justify-center mb-6">
+              <img
+                src="/cultural-staffing-logo.png"
+                alt="Cultural Staffing Solutions"
+                className="h-24 md:h-32 w-auto object-contain"
+              />
+            </div>
             <Badge className="bg-css-gold/10 text-css-gold border-css-gold">
               Northern Ireland's Premier Healthcare Staffing Solution
             </Badge>
@@ -217,19 +231,21 @@ const LandingPage = () => {
               </span>
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-              Bridging the gap between international healthcare talent and Northern Ireland HSC facilities 
+              Bridging the gap between international healthcare talent and Northern Ireland HSC facilities
               with comprehensive training, cultural integration, and AI-powered learning solutions.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-              <Button size="lg" className="bg-gradient-gold text-css-black hover:bg-css-gold font-montserrat font-bold">
-                <Link to="/login" className="flex items-center">
-                  Get Started Today <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
+              <Button
+                size="lg"
+                className="bg-gradient-gold text-css-black hover:bg-css-gold font-montserrat font-bold"
+                onClick={() => setWaitlistModalOpen(true)}
+              >
+                Join Our Waitlist <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
               <Button size="lg" variant="outline" className="font-montserrat">
-                <a href="#services" className="flex items-center">
-                  Learn More <ChevronRight className="ml-2 h-5 w-5" />
-                </a>
+                <Link to="/login" className="flex items-center">
+                  Login to Portal <ChevronRight className="ml-2 h-5 w-5" />
+                </Link>
               </Button>
             </div>
           </div>
@@ -385,20 +401,23 @@ const LandingPage = () => {
       <section className="py-20 px-4 bg-gradient-to-br from-css-gold/10 via-background to-css-grey-light">
         <div className="container mx-auto max-w-4xl text-center">
           <h2 className="font-montserrat font-bold text-3xl md:text-4xl text-foreground mb-4">
-            Ready to Transform Your Healthcare Career?
+            Ready to Start Your Journey?
           </h2>
           <p className="text-lg text-muted-foreground mb-8">
-            Join hundreds of healthcare professionals who have successfully integrated into the Irish healthcare system
+            Join our waitlist or access your training portal
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-gradient-gold text-css-black hover:bg-css-gold font-montserrat font-bold">
-              <Link to="/login" className="flex items-center">
-                Start Your Journey <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
+            <Button
+              size="lg"
+              className="bg-gradient-gold text-css-black hover:bg-css-gold font-montserrat font-bold"
+              onClick={() => setWaitlistModalOpen(true)}
+            >
+              Join Waitlist <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
             <Button size="lg" variant="outline" className="font-montserrat">
-              <MessageCircle className="mr-2 h-5 w-5" />
-              Contact Us
+              <Link to="/login" className="flex items-center">
+                Login to Portal <ChevronRight className="ml-2 h-5 w-5" />
+              </Link>
             </Button>
           </div>
 
@@ -409,7 +428,7 @@ const LandingPage = () => {
             </div>
             <div className="flex items-center justify-center gap-3">
               <Shield className="h-5 w-5 text-css-gold" />
-              <span className="text-sm">HSE Certified</span>
+              <span className="text-sm">HSC Certified</span>
             </div>
             <div className="flex items-center justify-center gap-3">
               <TrendingUp className="h-5 w-5 text-css-gold" />
@@ -425,9 +444,11 @@ const LandingPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <div className="w-10 h-10 bg-gradient-gold rounded-xl flex items-center justify-center">
-                  <span className="text-css-black font-montserrat font-bold text-sm">CSS</span>
-                </div>
+                <img
+                  src="/cultural-staffing-logo.png"
+                  alt="Cultural Staffing Solutions"
+                  className="h-10 w-auto object-contain"
+                />
                 <div>
                   <h3 className="font-montserrat font-bold text-lg">
                     Cultural Staffing
@@ -486,6 +507,13 @@ const LandingPage = () => {
           </div>
         </div>
       </footer>
+
+      {/* Waitlist Modal */}
+      <Dialog open={waitlistModalOpen} onOpenChange={setWaitlistModalOpen}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <WaitlistForm />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

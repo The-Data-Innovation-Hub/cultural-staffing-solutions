@@ -7,6 +7,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import Layout from "./components/Layout";
 import Login from "./pages/Login";
 import LandingPage from "./pages/LandingPage";
+import EmailConfirmation from "./pages/EmailConfirmation";
 import ProtectedRoute from "./components/ProtectedRoute";
 import EmployeeDashboard from "./pages/EmployeeDashboard";
 import ManagerDashboard from "./pages/ManagerDashboard";
@@ -27,7 +28,8 @@ const App = () => (
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/login/*" element={<Login />} />
-          
+          <Route path="/confirm-email" element={<EmailConfirmation />} />
+
           {/* Direct Access Routes */}
           <Route path="/assessment" element={<AssessmentCenter />} />
           <Route path="/assessments" element={<AssessmentCenter />} />

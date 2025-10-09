@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { useAuth, useUser } from "@clerk/clerk-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -7,11 +7,7 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
-  const { isLoaded, isSignedIn } = useAuth();
-  const { user } = useUser();
-  
-  // Get user role from Clerk publicMetadata, default to 'employee'
-  const userRole = (user?.publicMetadata?.role as string) || 'employee';
+  const { isLoaded, isSignedIn, user } = useAuth();
 
   if (!isLoaded) {
     return (
@@ -24,6 +20,9 @@ const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
   if (!isSignedIn) {
     return <Navigate to="/login" replace />;
   }
+
+  // Get user role
+  const userRole = user?.role || 'employee';
 
   // Check roles
   if (allowedRoles && allowedRoles.length > 0) {

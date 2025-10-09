@@ -4,66 +4,66 @@ import { isBunnyConfigured, BunnyConfig, getOptimizedImageUrl } from '@/lib/bunn
 export const IMAGES = {
   // Hero Section
   hero: {
-    background: isBunnyConfigured() 
+    background: isBunnyConfigured()
       ? `${BunnyConfig.cdnUrl}/images/hero/healthcare-professionals.jpg`
-      : '/placeholder.svg',
+      : '/images/hero/healthcare-professionals.jpg',
   },
 
   // Features
   features: {
     training: isBunnyConfigured()
       ? `${BunnyConfig.cdnUrl}/images/features/training.jpg`
-      : '/placeholder.svg',
-    
+      : '/images/features/training.jpg',
+
     cultural: isBunnyConfigured()
       ? `${BunnyConfig.cdnUrl}/images/features/cultural-integration.jpg`
-      : '/placeholder.svg',
-    
+      : '/images/features/cultural-integration.jpg',
+
     aiLearning: isBunnyConfigured()
       ? `${BunnyConfig.cdnUrl}/images/features/ai-learning.jpg`
-      : '/placeholder.svg',
-    
+      : '/images/features/ai-learning.jpg',
+
     certified: isBunnyConfigured()
       ? `${BunnyConfig.cdnUrl}/images/features/certified-programs.jpg`
-      : '/placeholder.svg',
-    
+      : '/images/features/certified-programs.jpg',
+
     support: isBunnyConfigured()
       ? `${BunnyConfig.cdnUrl}/images/features/expert-support.jpg`
-      : '/placeholder.svg',
-    
+      : '/images/features/expert-support.jpg',
+
     compliance: isBunnyConfigured()
       ? `${BunnyConfig.cdnUrl}/images/features/compliance.jpg`
-      : '/placeholder.svg',
+      : '/images/features/compliance.jpg',
   },
 
   // Services
   services: {
     healthcare: isBunnyConfigured()
       ? `${BunnyConfig.cdnUrl}/images/services/healthcare-training.jpg`
-      : '/placeholder.svg',
-    
+      : '/images/services/healthcare-training.jpg',
+
     cultural: isBunnyConfigured()
       ? `${BunnyConfig.cdnUrl}/images/services/cultural-orientation.jpg`
-      : '/placeholder.svg',
-    
+      : '/images/services/cultural-orientation.jpg',
+
     recruitment: isBunnyConfigured()
       ? `${BunnyConfig.cdnUrl}/images/services/recruitment.jpg`
-      : '/placeholder.svg',
+      : '/images/services/recruitment.jpg',
   },
 
   // Testimonials
   testimonials: {
     maria: isBunnyConfigured()
       ? `${BunnyConfig.cdnUrl}/images/testimonials/maria-santos.jpg`
-      : '/placeholder.svg',
-    
+      : '/images/testimonials/maria-santos.jpg',
+
     john: isBunnyConfigured()
       ? `${BunnyConfig.cdnUrl}/images/testimonials/john-kumar.jpg`
-      : '/placeholder.svg',
-    
+      : '/images/testimonials/john-kumar.jpg',
+
     sarah: isBunnyConfigured()
       ? `${BunnyConfig.cdnUrl}/images/testimonials/sarah-obrien.jpg`
-      : '/placeholder.svg',
+      : '/images/testimonials/sarah-obrien.jpg',
   },
 
   // Default placeholders

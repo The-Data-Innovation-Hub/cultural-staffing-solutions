@@ -150,6 +150,40 @@ export const learningAnalytics = pgTable('learning_analytics', {
   date: timestamp('date').defaultNow().notNull(),
 });
 
+// Waitlist table
+export const waitlist = pgTable('waitlist', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  email: varchar('email', { length: 255 }).notNull().unique(),
+  firstName: varchar('first_name', { length: 100 }),
+  lastName: varchar('last_name', { length: 100 }),
+  phone: varchar('phone', { length: 50 }),
+  profession: varchar('profession', { length: 100 }), // e.g., 'nurse', 'doctor', 'care_assistant'
+  yearsOfExperience: integer('years_of_experience'),
+  interestedServices: json('interested_services'), // array of service types
+  message: text('message'),
+  status: varchar('status', { length: 50 }).default('waitlisted').notNull(), // waitlisted, contacted, registered, removed
+  signupDate: timestamp('signup_date').defaultNow().notNull(),
+  confirmedEmail: boolean('confirmed_email').default(false).notNull(),
+  confirmationToken: varchar('confirmation_token', { length: 255 }),
+  ipAddress: varchar('ip_address', { length: 50 }),
+  referralSource: varchar('referral_source', { length: 100 }), // how they heard about us
+  notes: text('notes'), // admin notes
+  contactedAt: timestamp('contacted_at'),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+// Waitlist Audit Log table
+export const waitlistAuditLog = pgTable('waitlist_audit_log', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  waitlistId: uuid('waitlist_id').notNull().references(() => waitlist.id),
+  adminUserId: uuid('admin_user_id').references(() => users.id),
+  action: varchar('action', { length: 100 }).notNull(), // e.g., 'status_change', 'note_added', 'contacted'
+  previousValue: text('previous_value'),
+  newValue: text('new_value'),
+  timestamp: timestamp('timestamp').defaultNow().notNull(),
+  ipAddress: varchar('ip_address', { length: 50 }),
+});
+
 // Define relations
 export const usersRelations = relations(users, ({ many }) => ({
   courseProgress: many(userCourseProgress),

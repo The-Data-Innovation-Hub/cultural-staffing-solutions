@@ -57,12 +57,12 @@ const EmployeeDashboard = () => {
             Continue your learning journey in Irish healthcare
           </p>
         </div>
-        <Button 
+        <Button
           onClick={() => navigate('/employee/ai-guru')}
           className="bg-gradient-gold text-css-black hover:bg-css-gold font-montserrat font-bold"
         >
           <MessageCircle className="mr-2 h-4 w-4" />
-          Ask AI Guru
+          Ask Clinify AI
         </Button>
       </div>
 
