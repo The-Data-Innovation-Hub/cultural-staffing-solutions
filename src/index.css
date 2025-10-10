@@ -125,3 +125,102 @@ Fonts: Montserrat Bold, Neutrif Pro Medium
     @apply bg-background text-foreground;
   }
 }
+
+/* Custom Range Slider Styling */
+@layer components {
+  /* Webkit browsers (Chrome, Safari, Edge) */
+  input[type="range"].slider-gold::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #D4AF37 0%, #C4A028 100%);
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(212, 175, 55, 0.4);
+    border: 3px solid white;
+    transition: all 0.2s ease;
+  }
+
+  input[type="range"].slider-gold::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.6);
+  }
+
+  input[type="range"].slider-gold::-webkit-slider-thumb:active {
+    transform: scale(0.95);
+  }
+
+  /* Firefox */
+  input[type="range"].slider-gold::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #D4AF37 0%, #C4A028 100%);
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(212, 175, 55, 0.4);
+    border: 3px solid white;
+    transition: all 0.2s ease;
+  }
+
+  input[type="range"].slider-gold::-moz-range-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.6);
+  }
+
+  input[type="range"].slider-gold::-moz-range-thumb:active {
+    transform: scale(0.95);
+  }
+
+  /* Track styling */
+  input[type="range"].slider-gold::-webkit-slider-runnable-track {
+    height: 8px;
+    border-radius: 4px;
+  }
+
+  input[type="range"].slider-gold::-moz-range-track {
+    height: 8px;
+    border-radius: 4px;
+    background: #E5E7EB;
+  }
+
+  /* Focus styles */
+  input[type="range"].slider-gold:focus {
+    outline: none;
+  }
+
+  input[type="range"].slider-gold:focus::-webkit-slider-thumb {
+    box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.2), 0 2px 8px rgba(212, 175, 55, 0.4);
+  }
+
+  input[type="range"].slider-gold:focus::-moz-range-thumb {
+    box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.2), 0 2px 8px rgba(212, 175, 55, 0.4);
+  }
+
+  /* Neumorphic Design Shadows */
+  .shadow-neumorphic {
+    box-shadow:
+      8px 8px 16px rgba(163, 177, 198, 0.6),
+      -8px -8px 16px rgba(255, 255, 255, 0.5);
+  }
+
+  .shadow-neumorphic-hover {
+    box-shadow:
+      12px 12px 24px rgba(163, 177, 198, 0.7),
+      -12px -12px 24px rgba(255, 255, 255, 0.6);
+  }
+
+  .shadow-neumorphic-inset {
+    box-shadow:
+      inset 4px 4px 8px rgba(163, 177, 198, 0.5),
+      inset -4px -4px 8px rgba(255, 255, 255, 0.5);
+  }
+
+  .bg-gradient-gold {
+    background: linear-gradient(135deg, #FFC107 0%, #FFB300 100%);
+  }
+
+  .bg-gradient-dark {
+    background: linear-gradient(135deg, #171717 0%, #262626 100%);
+  }
+}

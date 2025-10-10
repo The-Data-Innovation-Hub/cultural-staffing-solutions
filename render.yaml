@@ -1,0 +1,52 @@
+# Render Blueprint Configuration
+# This file defines the infrastructure for deploying to Render
+# Documentation: https://render.com/docs/blueprint-spec
+
+services:
+  # Backend API Service
+  - type: web
+    name: cultural-staffing-backend
+    runtime: node
+    region: oregon  # or: singapore, frankfurt, oregon
+    plan: free  # or: starter, standard, pro
+    branch: main
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeploy: true
+
+    envVars:
+      - key: NODE_ENV
+        value: production
+
+      - key: DATABASE_URL
+        sync: false  # Set this manually in Render dashboard (from Neon)
+
+      - key: SESSION_SECRET
+        generateValue: true  # Render auto-generates a secure random value
+
+      - key: FRONTEND_URL
+        sync: false  # Set this manually after deploying frontend
+
+      - key: PORT
+        value: 10000  # Render's default port
+
+    # Auto-scaling configuration (paid plans only)
+    # numInstances: 1
+
+    # Disk storage (if needed)
+    # disk:
+    #   name: backend-disk
+    #   mountPath: /opt/render/project/data
+    #   sizeGB: 1
+
+# Database (Optional - we're using external Neon)
+# Uncomment if you want to use Render's PostgreSQL instead of Neon
+# databases:
+#   - name: cultural-staffing-db
+#     databaseName: cultural_staffing
+#     user: admin
+#     plan: free  # 90-day expiry, then recreate or upgrade
+#     region: oregon
+#     ipAllowList: []  # Empty means allow all (required for free tier)

@@ -1,18 +1,21 @@
 import { useLocation, NavLink, useNavigate } from "react-router-dom";
-import { 
-  BookOpen, 
-  GraduationCap, 
-  Users, 
-  BarChart3, 
-  Settings, 
+import {
+  BookOpen,
+  GraduationCap,
+  Users,
+  BarChart3,
+  Settings,
   FileText,
   Award,
-  MessageCircle,
   PieChart,
   Upload,
   UserCog,
   User,
-  LogOut
+  LogOut,
+  BookMarked,
+  Sparkles,
+  TrendingUp,
+  FileCode2
 } from "lucide-react";
 
 import {
@@ -34,12 +37,25 @@ import { Separator } from "@/components/ui/separator";
 
 import { useAuth } from "@/contexts/AuthContext";
 
+// Custom icon component for Clinify AI
+const ClinifyAIIcon = ({ className }: { className?: string }) => (
+  <img
+    src="/clinify-ai-logo.png"
+    alt="Clinify AI"
+    className={className}
+    style={{ objectFit: 'contain' }}
+  />
+);
+
 // Navigation items for different roles
 const employeeNavItems = [
   { title: "Dashboard", url: "/employee", icon: BarChart3 },
+  { title: "Onboarding Assessment", url: "/employee/onboarding", icon: Sparkles },
+  { title: "My Learning Path", url: "/employee/learning-path", icon: TrendingUp },
   { title: "Training Center", url: "/employee/training", icon: BookOpen },
   { title: "Assessments", url: "/employee/assessments", icon: GraduationCap },
-  { title: "Clinify AI", url: "/employee/ai-guru", icon: MessageCircle },
+  { title: "Clinify AI", url: "/employee/ai-guru", icon: ClinifyAIIcon },
+  { title: "Medical Abbreviations", url: "/employee/abbreviations", icon: BookMarked },
   { title: "Certificates", url: "/employee/certificates", icon: Award },
   { title: "Profile", url: "/employee/profile", icon: User },
 ];
@@ -49,17 +65,23 @@ const managerNavItems = [
   { title: "Team Management", url: "/manager/team", icon: Users },
   { title: "Reports", url: "/manager/reports", icon: FileText },
   { title: "Analytics", url: "/manager/analytics", icon: PieChart },
+  { title: "Medical Abbreviations", url: "/manager/abbreviations", icon: BookMarked },
   { title: "Profile", url: "/manager/profile", icon: User },
 ];
 
 const adminNavItems = [
   { title: "Dashboard", url: "/admin", icon: BarChart3 },
   { title: "Waitlist", url: "/admin/waitlist", icon: Users },
+  { title: "Workforce Analytics", url: "/admin/analytics", icon: PieChart },
+  { title: "Medical Abbreviations", url: "/admin/abbreviations", icon: BookMarked },
+  { title: "Profile", url: "/admin/profile", icon: User },
+];
+
+const adminComingSoonItems = [
   { title: "Content Management", url: "/admin/content", icon: Upload },
   { title: "User Management", url: "/admin/users", icon: UserCog },
-  { title: "System Analytics", url: "/admin/analytics", icon: PieChart },
   { title: "Settings", url: "/admin/settings", icon: Settings },
-  { title: "Profile", url: "/admin/profile", icon: User },
+  { title: "API Documentation", url: "/admin/api-docs", icon: FileCode2 },
 ];
 
 export function AppSidebar() {
@@ -142,18 +164,18 @@ export function AppSidebar() {
           <SidebarGroupLabel className="px-4 py-2 text-muted-foreground font-montserrat font-medium">
             {!isCollapsed && "Navigation"}
           </SidebarGroupLabel>
-          
+
           <SidebarGroupContent>
             <SidebarMenu className="px-2">
               {navItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton 
+                  <SidebarMenuButton
                     asChild
                     className={`
                       w-full justify-start gap-3 px-3 py-3 rounded-lg transition-all duration-200
                       hover:bg-accent/10 hover:text-accent-foreground
-                      ${isActive(item.url) 
-                        ? 'bg-gradient-gold text-css-black font-medium shadow-sm' 
+                      ${isActive(item.url)
+                        ? 'bg-gradient-gold text-css-black font-medium shadow-sm'
                         : 'text-muted-foreground'
                       }
                     `}
@@ -172,6 +194,46 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        {currentRole === 'admin' && (
+          <>
+            <Separator className="my-2" />
+            <SidebarGroup>
+              <SidebarGroupLabel className="px-4 py-2 text-muted-foreground font-montserrat font-medium">
+                {!isCollapsed && "Coming Soon"}
+              </SidebarGroupLabel>
+
+              <SidebarGroupContent>
+                <SidebarMenu className="px-2">
+                  {adminComingSoonItems.map((item) => (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton
+                        asChild
+                        className={`
+                          w-full justify-start gap-3 px-3 py-3 rounded-lg transition-all duration-200
+                          hover:bg-accent/10 hover:text-accent-foreground
+                          ${isActive(item.url)
+                            ? 'bg-gradient-gold text-css-black font-medium shadow-sm'
+                            : 'text-muted-foreground'
+                          }
+                        `}
+                      >
+                        <NavLink to={item.url} className="flex items-center gap-3 w-full">
+                          <item.icon className="h-5 w-5 shrink-0" />
+                          {!isCollapsed && (
+                            <span className="font-montserrat font-medium">
+                              {item.title}
+                            </span>
+                          )}
+                        </NavLink>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </>
+        )}
       </SidebarContent>
       
       <SidebarFooter className="border-t border-border p-2">

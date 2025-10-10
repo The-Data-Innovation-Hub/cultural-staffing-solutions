@@ -1,0 +1,1135 @@
+openapi: 3.0.3
+info:
+  title: Cultural Staffing Solutions - Assessment API
+  description: |
+    API for managing healthcare worker onboarding assessments, learning paths,
+    course enrollment, progress tracking, and cultural competency development.
+
+    ## Features
+    - 🎯 Personalized learning path generation
+    - 📊 Skills gap analysis
+    - 🌍 Cultural competency tracking
+    - 📚 Course enrollment and progress
+    - 🏆 Milestone tracking
+    - 📈 Analytics and reporting
+
+    ## Authentication
+    All endpoints require authentication via session cookies or JWT tokens.
+    Include credentials with every request.
+  version: 1.0.0
+  contact:
+    name: CSS Development Team
+    email: dev@culturalstaffingsolutions.com
+  license:
+    name: Proprietary
+
+servers:
+  - url: http://localhost:3001/api
+    description: Local development server
+  - url: https://api.culturalstaffingsolutions.com/api
+    description: Production server
+
+tags:
+  - name: Assessments
+    description: User assessment submission and retrieval
+  - name: Learning Paths
+    description: Personalized learning path management
+  - name: Courses
+    description: Course catalog, enrollment, and progress
+  - name: Milestones
+    description: Learning milestones and achievements
+  - name: Priority Areas
+    description: Focus areas for improvement
+  - name: Review Cycles
+    description: 30/60/90-day review cycles and check-ins
+  - name: Analytics
+    description: Progress analytics and reporting
+  - name: Health
+    description: API health and status checks
+
+paths:
+  # ============================================================================
+  # ASSESSMENTS
+  # ============================================================================
+
+  /assessments:
+    post:
+      tags:
+        - Assessments
+      summary: Submit a completed assessment
+      description: |
+        Submit a completed onboarding assessment and automatically generate
+        a personalized learning path based on the results.
+      operationId: submitAssessment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitAssessmentRequest'
+            examples:
+              nurse_from_philippines:
+                summary: Nurse from Philippines
+                value:
+                  role: nurse
+                  culturalBackground:
+                    countryOfOrigin: Philippines
+                    primaryLanguage: Tagalog
+                    englishProficiency: 4
+                    yearsInTargetCountry: 0
+                    previousInternationalExperience: false
+                    culturalAdaptationConcerns:
+                      - Communication style differences
+                      - Healthcare system navigation
+                  skillRatings:
+                    patient_assessment: 4
+                    medication_administration: 5
+                    wound_care: 3
+                    ehr_systems: 2
+                    medical_equipment: 3
+                    documentation: 3
+                    patient_communication: 4
+                    team_collaboration: 4
+                    cultural_sensitivity: 3
+                    hipaa_privacy: 2
+                    infection_control: 5
+                    safety_protocols: 4
+                  learningPreferences:
+                    primaryStyle: visual
+                    secondaryStyle: kinesthetic
+                    preferredContentTypes:
+                      - video
+                      - interactive
+                    timeCommitment: moderate
+                    notificationFrequency: weekly
+                  assessmentState:
+                    currentStep: results
+                    completedSteps:
+                      - welcome
+                      - role
+                      - cultural
+                      - skills
+                      - preferences
+                      - results
+                    progress:
+                      percentComplete: 100
+                      stepsCompleted: 6
+                      totalSteps: 6
+                    answers: {}
+      responses:
+        '201':
+          description: Assessment submitted successfully, learning path created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmitAssessmentResponse'
+              example:
+                assessmentId: "a1b2c3d4-5678-90ab-cdef-1234567890ab"
+                learningPathId: "lp-9876-5432-1098-7654"
+                message: "Assessment submitted successfully. Your personalized learning path has been created!"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /assessments/history:
+    get:
+      tags:
+        - Assessments
+      summary: Get assessment history
+      description: Retrieve all past assessments for the current user
+      operationId: getAssessmentHistory
+      responses:
+        '200':
+          description: Assessment history retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AssessmentState'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /assessments/retake:
+    post:
+      tags:
+        - Assessments
+      summary: Start assessment retake
+      description: Initialize a new assessment for re-evaluation
+      operationId: retakeAssessment
+      responses:
+        '201':
+          description: New assessment started
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  assessmentId:
+                    type: string
+                    format: uuid
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # ============================================================================
+  # LEARNING PATHS
+  # ============================================================================
+
+  /learning-paths/me:
+    get:
+      tags:
+        - Learning Paths
+      summary: Get current user's learning path
+      description: Retrieve the active learning path for the authenticated user
+      operationId: getMyLearningPath
+      responses:
+        '200':
+          description: Learning path retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningPath'
+        '404':
+          description: No learning path found - user needs to complete assessment
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /learning-paths/{userId}:
+    get:
+      tags:
+        - Learning Paths
+      summary: Get learning path for specific user
+      description: Retrieve learning path for a specific user (admin only)
+      operationId: getUserLearningPath
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Learning path retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningPath'
+        '404':
+          description: Learning path not found
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /learning-paths/{learningPathId}:
+    patch:
+      tags:
+        - Learning Paths
+      summary: Update learning path progress
+      description: Update status or progress for a learning path
+      operationId: updateLearningPath
+      parameters:
+        - name: learningPathId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  $ref: '#/components/schemas/LearningPathStatus'
+                completedAt:
+                  type: string
+                  format: date-time
+      responses:
+        '200':
+          description: Learning path updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningPath'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Learning path not found
+
+  # ============================================================================
+  # PRIORITY AREAS
+  # ============================================================================
+
+  /learning-paths/{learningPathId}/priority-areas:
+    get:
+      tags:
+        - Priority Areas
+      summary: Get priority areas for learning path
+      description: Retrieve all focus areas ranked by priority
+      operationId: getPriorityAreas
+      parameters:
+        - name: learningPathId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Priority areas retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PriorityArea'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Learning path not found
+
+  /priority-areas/{areaId}:
+    patch:
+      tags:
+        - Priority Areas
+      summary: Update priority area
+      description: Update progress or completion status for a priority area
+      operationId: updatePriorityArea
+      parameters:
+        - name: areaId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                currentLevel:
+                  type: integer
+                  minimum: 1
+                  maximum: 5
+                isCompleted:
+                  type: boolean
+      responses:
+        '200':
+          description: Priority area updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PriorityArea'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Priority area not found
+
+  # ============================================================================
+  # COURSES
+  # ============================================================================
+
+  /learning-paths/{learningPathId}/courses:
+    get:
+      tags:
+        - Courses
+      summary: Get recommended courses
+      description: Retrieve all recommended courses for a learning path
+      operationId: getRecommendedCourses
+      parameters:
+        - name: learningPathId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Recommended courses retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecommendedCourse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Learning path not found
+
+  /courses/{courseId}/enroll:
+    post:
+      tags:
+        - Courses
+      summary: Enroll in a course
+      description: Enroll the current user in a specific course
+      operationId: enrollInCourse
+      parameters:
+        - name: courseId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Successfully enrolled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecommendedCourse'
+        '400':
+          description: Already enrolled or course not available
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Course not found
+
+  /courses/{courseId}/progress:
+    patch:
+      tags:
+        - Courses
+      summary: Update course progress
+      description: Update completion percentage for an enrolled course
+      operationId: updateCourseProgress
+      parameters:
+        - name: courseId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - progressPercentage
+              properties:
+                progressPercentage:
+                  type: integer
+                  minimum: 0
+                  maximum: 100
+                  example: 45
+      responses:
+        '200':
+          description: Progress updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecommendedCourse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Course enrollment not found
+
+  # ============================================================================
+  # MILESTONES
+  # ============================================================================
+
+  /learning-paths/{learningPathId}/milestones:
+    get:
+      tags:
+        - Milestones
+      summary: Get milestones for learning path
+      description: Retrieve all milestones with completion status
+      operationId: getMilestones
+      parameters:
+        - name: learningPathId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Milestones retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Milestone'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Learning path not found
+
+  /milestones/{milestoneId}/complete:
+    post:
+      tags:
+        - Milestones
+      summary: Mark milestone as completed
+      description: Complete a milestone and award associated badges/rewards
+      operationId: completeMilestone
+      parameters:
+        - name: milestoneId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Milestone completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Milestone'
+        '400':
+          description: Milestone already completed
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Milestone not found
+
+  # ============================================================================
+  # REVIEW CYCLES
+  # ============================================================================
+
+  /review-cycles/current:
+    get:
+      tags:
+        - Review Cycles
+      summary: Get current review cycle
+      description: Retrieve the active 30/60/90-day review cycle
+      operationId: getCurrentReviewCycle
+      responses:
+        '200':
+          description: Review cycle retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewCycle'
+        '404':
+          description: No active review cycle
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /check-ins:
+    post:
+      tags:
+        - Review Cycles
+      summary: Submit a progress check-in
+      description: Submit a check-in for progress review and feedback
+      operationId: submitCheckIn
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckInRequest'
+      responses:
+        '201':
+          description: Check-in submitted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckIn'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # ============================================================================
+  # ANALYTICS
+  # ============================================================================
+
+  /analytics/assessments/me:
+    get:
+      tags:
+        - Analytics
+      summary: Get my assessment analytics
+      description: Retrieve analytics for the current user's assessments
+      operationId: getMyAnalytics
+      responses:
+        '200':
+          description: Analytics retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssessmentAnalytics'
+        '404':
+          description: No analytics data available
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /analytics/assessments/{userId}:
+    get:
+      tags:
+        - Analytics
+      summary: Get user assessment analytics
+      description: Retrieve analytics for a specific user (admin only)
+      operationId: getUserAnalytics
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Analytics retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssessmentAnalytics'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: User or analytics not found
+
+  # ============================================================================
+  # HEALTH
+  # ============================================================================
+
+  /health:
+    get:
+      tags:
+        - Health
+      summary: API health check
+      description: Check if the API is responding
+      operationId: healthCheck
+      responses:
+        '200':
+          description: API is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [healthy, degraded, down]
+                  timestamp:
+                    type: string
+                    format: date-time
+                  version:
+                    type: string
+              example:
+                status: healthy
+                timestamp: "2025-01-10T12:00:00Z"
+                version: "1.0.0"
+
+# ============================================================================
+# COMPONENTS
+# ============================================================================
+
+components:
+  schemas:
+    # Assessment Request/Response
+    SubmitAssessmentRequest:
+      type: object
+      required:
+        - role
+        - culturalBackground
+        - skillRatings
+        - learningPreferences
+        - assessmentState
+      properties:
+        role:
+          $ref: '#/components/schemas/UserRole'
+        culturalBackground:
+          $ref: '#/components/schemas/CulturalBackground'
+        skillRatings:
+          type: object
+          additionalProperties:
+            type: integer
+            minimum: 1
+            maximum: 5
+        learningPreferences:
+          $ref: '#/components/schemas/LearningPreferences'
+        assessmentState:
+          $ref: '#/components/schemas/AssessmentState'
+
+    SubmitAssessmentResponse:
+      type: object
+      properties:
+        assessmentId:
+          type: string
+          format: uuid
+        learningPathId:
+          type: string
+          format: uuid
+        message:
+          type: string
+
+    # Core Entities
+    LearningPath:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        assessmentId:
+          type: string
+          format: uuid
+        pathName:
+          type: string
+          example: "Nurse Cultural Integration & Development"
+        pathDescription:
+          type: string
+        overallScore:
+          type: integer
+          minimum: 0
+          maximum: 100
+        culturalCompetencyScore:
+          type: integer
+          minimum: 0
+          maximum: 100
+        skillsScore:
+          type: integer
+          minimum: 0
+          maximum: 100
+        estimatedCompletionWeeks:
+          type: integer
+        difficultyLevel:
+          type: string
+          enum: [beginner, intermediate, advanced]
+        isActive:
+          type: boolean
+        status:
+          $ref: '#/components/schemas/LearningPathStatus'
+        createdAt:
+          type: string
+          format: date-time
+        startedAt:
+          type: string
+          format: date-time
+        completedAt:
+          type: string
+          format: date-time
+
+    PriorityArea:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        learningPathId:
+          type: string
+          format: uuid
+        category:
+          type: string
+          enum: [cultural, technical, language, compliance]
+        title:
+          type: string
+        description:
+          type: string
+        importance:
+          type: string
+          enum: [critical, high, medium, low]
+        currentLevel:
+          type: integer
+          minimum: 1
+          maximum: 5
+        targetLevel:
+          type: integer
+          minimum: 1
+          maximum: 5
+        estimatedTimeWeeks:
+          type: integer
+        isCompleted:
+          type: boolean
+        priorityOrder:
+          type: integer
+
+    RecommendedCourse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        learningPathId:
+          type: string
+          format: uuid
+        courseId:
+          type: string
+        courseTitle:
+          type: string
+        courseDescription:
+          type: string
+        category:
+          type: string
+        durationMinutes:
+          type: integer
+        difficultyLevel:
+          type: string
+          enum: [beginner, intermediate, advanced]
+        contentTypes:
+          type: array
+          items:
+            type: string
+        priorityOrder:
+          type: integer
+        isRequired:
+          type: boolean
+        isEnrolled:
+          type: boolean
+        isCompleted:
+          type: boolean
+        progressPercentage:
+          type: integer
+          minimum: 0
+          maximum: 100
+
+    Milestone:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        learningPathId:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+        milestoneType:
+          type: string
+          enum: [cultural, skills, course_completion, general]
+        targetDate:
+          type: string
+          format: date-time
+        scheduledWeek:
+          type: integer
+        associatedCourseIds:
+          type: array
+          items:
+            type: string
+        requiredActivities:
+          type: array
+          items:
+            type: string
+        isCompleted:
+          type: boolean
+        completedAt:
+          type: string
+          format: date-time
+        rewards:
+          type: array
+          items:
+            type: string
+        badgeAwarded:
+          type: string
+        milestoneOrder:
+          type: integer
+
+    ReviewCycle:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        learningPathId:
+          type: string
+          format: uuid
+        cycleType:
+          type: string
+          enum: ['30-day', '60-day', '90-day']
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        isActive:
+          type: boolean
+        checkInsCompleted:
+          type: integer
+        nextCheckInDate:
+          type: string
+          format: date-time
+
+    CheckIn:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        reviewCycleId:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        checkInDate:
+          type: string
+          format: date-time
+        daysSinceStart:
+          type: integer
+        progressRating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        challengesFaced:
+          type: array
+          items:
+            type: string
+        successesAchieved:
+          type: array
+          items:
+            type: string
+        supportNeeded:
+          type: array
+          items:
+            type: string
+        coursesCompletedSinceLastCheckIn:
+          type: integer
+        hoursSpentLearning:
+          type: number
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CheckInRequest:
+      type: object
+      required:
+        - reviewCycleId
+        - progressRating
+      properties:
+        reviewCycleId:
+          type: string
+          format: uuid
+        progressRating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        challengesFaced:
+          type: array
+          items:
+            type: string
+        successesAchieved:
+          type: array
+          items:
+            type: string
+        supportNeeded:
+          type: array
+          items:
+            type: string
+        coursesCompletedSinceLastCheckIn:
+          type: integer
+        hoursSpentLearning:
+          type: number
+
+    AssessmentAnalytics:
+      type: object
+      properties:
+        userId:
+          type: string
+          format: uuid
+        assessmentId:
+          type: string
+          format: uuid
+        completionRate:
+          type: number
+        timeSpent:
+          type: integer
+          description: Time spent in minutes
+        retakeCount:
+          type: integer
+        role:
+          type: string
+        countryOfOrigin:
+          type: string
+        culturalCompetencyScore:
+          type: integer
+        skillsScore:
+          type: integer
+        engagementScore:
+          type: integer
+        progressOverTime:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                format: date
+              culturalCompetencyScore:
+                type: integer
+              skillsScore:
+                type: integer
+              coursesCompleted:
+                type: integer
+              milestonesAchieved:
+                type: integer
+
+    # Supporting Types
+    UserRole:
+      type: string
+      enum:
+        - nurse
+        - physician
+        - allied-health
+        - administrative
+        - other
+
+    CulturalBackground:
+      type: object
+      required:
+        - countryOfOrigin
+        - primaryLanguage
+        - englishProficiency
+      properties:
+        countryOfOrigin:
+          type: string
+        primaryLanguage:
+          type: string
+        englishProficiency:
+          type: integer
+          minimum: 1
+          maximum: 5
+        yearsInTargetCountry:
+          type: integer
+        previousInternationalExperience:
+          type: boolean
+        culturalAdaptationConcerns:
+          type: array
+          items:
+            type: string
+
+    LearningPreferences:
+      type: object
+      required:
+        - primaryStyle
+        - timeCommitment
+        - notificationFrequency
+      properties:
+        primaryStyle:
+          type: string
+          enum: [visual, auditory, reading-writing, kinesthetic]
+        secondaryStyle:
+          type: string
+          enum: [visual, auditory, reading-writing, kinesthetic]
+        preferredContentTypes:
+          type: array
+          items:
+            type: string
+        timeCommitment:
+          type: string
+          enum: [light, moderate, intensive]
+        notificationFrequency:
+          type: string
+          enum: [daily, weekly, biweekly, monthly]
+
+    AssessmentState:
+      type: object
+      properties:
+        currentStep:
+          type: string
+        completedSteps:
+          type: array
+          items:
+            type: string
+        progress:
+          type: object
+          properties:
+            percentComplete:
+              type: integer
+            stepsCompleted:
+              type: integer
+            totalSteps:
+              type: integer
+        answers:
+          type: object
+
+    LearningPathStatus:
+      type: string
+      enum:
+        - in_progress
+        - completed
+        - on_hold
+        - abandoned
+
+    # Error Types
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+        details:
+          type: object
+
+  responses:
+    BadRequest:
+      description: Invalid request parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: "Invalid request body"
+            code: "VALIDATION_ERROR"
+            details:
+              field: "skillRatings"
+              issue: "Must contain ratings for all 12 skills"
+
+    Unauthorized:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: "Authentication required"
+            code: "UNAUTHORIZED"
+
+    Forbidden:
+      description: Insufficient permissions
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: "You do not have permission to access this resource"
+            code: "FORBIDDEN"
+
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: "An unexpected error occurred"
+            code: "INTERNAL_ERROR"
+
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: session
+
+security:
+  - cookieAuth: []

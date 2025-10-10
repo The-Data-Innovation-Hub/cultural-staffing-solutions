@@ -1,0 +1,13 @@
+# Railway ignore file
+# Files and directories to exclude from Railway deployment
+
+node_modules/
+*.log
+.env
+.env.local
+.env.development
+test-*.sh
+*.test.ts
+*.test.js
+__tests__/
+.DS_Store

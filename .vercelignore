@@ -1,0 +1,15 @@
+# Vercel ignore file
+# Files and directories to exclude from Vercel deployment
+
+backend/
+node_modules/
+*.log
+.env.local
+.env.development
+*.test.ts
+*.test.tsx
+*.test.js
+__tests__/
+.DS_Store
+docs/
+scripts/

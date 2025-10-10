@@ -33,16 +33,18 @@ export async function login(credentials: LoginCredentials): Promise<{ success: b
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include', // Important: send/receive cookies
       body: JSON.stringify(credentials),
     });
 
     const data = await response.json();
 
     if (!response.ok) {
-      return { success: false, error: data.error || 'Login failed' };
+      return { success: false, error: data.message || data.error || 'Login failed' };
     }
 
-    return { success: true, user: data.user };
+    // Backend returns user directly, not wrapped in a user property
+    return { success: true, user: data };
   } catch (error: any) {
     console.error('Login error:', error);
     return { success: false, error: error.message || 'An error occurred during login' };

@@ -67,7 +67,7 @@ const AIGuru = () => {
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
@@ -88,9 +88,16 @@ const AIGuru = () => {
 
   return (
     <div className="container mx-auto p-6 max-w-6xl">
-      <div className="mb-6">
+      <div className="mb-6 flex flex-col items-center text-center">
+        <div className="mb-4 p-4 bg-white dark:bg-gray-800 rounded-2xl shadow-lg">
+          <img
+            src="/clinify-ai-logo.png"
+            alt="Clinify AI"
+            className="h-24 w-auto object-contain"
+          />
+        </div>
         <h1 className="text-3xl font-montserrat font-bold text-foreground mb-2">
-          AI Healthcare Assistant
+          Clinify AI Healthcare Assistant
         </h1>
         <p className="text-muted-foreground">
           Get instant guidance on healthcare training, procedures, and professional development
@@ -183,7 +190,7 @@ const AIGuru = () => {
                     placeholder="Type your question here..."
                     value={inputMessage}
                     onChange={(e) => setInputMessage(e.target.value)}
-                    onKeyPress={handleKeyPress}
+                    onKeyDown={handleKeyDown}
                     disabled={isLoading || !isConfigured}
                     className="flex-1"
                   />

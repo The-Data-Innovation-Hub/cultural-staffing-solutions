@@ -2,7 +2,7 @@ import { Outlet, Routes, Route, useLocation, Link } from "react-router-dom";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { Button } from "@/components/ui/button";
-import { Bell, Settings, User } from "lucide-react";
+import { Bell, Settings as SettingsIcon, User } from "lucide-react";
 import EmployeeDashboard from "../pages/EmployeeDashboard";
 import ManagerDashboard from "../pages/ManagerDashboard";
 import AdminDashboard from "../pages/AdminDashboard";
@@ -12,7 +12,16 @@ import AssessmentCenter from "../pages/AssessmentCenter";
 import UserProfile from "../pages/UserProfile";
 import AIGuru from "../pages/employee/AIGuru";
 import Certificates from "../pages/employee/Certificates";
+import OnboardingAssessment from "../pages/employee/OnboardingAssessment";
+import AssessmentDashboard from "../pages/employee/AssessmentDashboard";
 import WaitlistManagement from "../pages/admin/WaitlistManagement";
+import ContentManagement from "../pages/admin/ContentManagement";
+import UserManagement from "../pages/admin/UserManagement";
+import SystemAnalytics from "../pages/admin/SystemAnalytics";
+import Settings from "../pages/admin/Settings";
+import APIDocumentation from "../pages/admin/APIDocumentation";
+import AnalyticsDashboard from "../pages/admin/AnalyticsDashboard";
+import MedicalAbbreviationsV2 from "../pages/MedicalAbbreviationsV2";
 
 const Layout = () => {
   const location = useLocation();
@@ -44,7 +53,7 @@ const Layout = () => {
               <Bell className="h-4 w-4" />
             </Button>
             <Button variant="ghost" size="icon" className="h-9 w-9">
-              <Settings className="h-4 w-4" />
+              <SettingsIcon className="h-4 w-4" />
             </Button>
             <Button variant="ghost" size="icon" className="h-9 w-9" asChild>
               <Link to={`/${currentRole}/profile`}>
@@ -64,9 +73,12 @@ const Layout = () => {
                 <Route path="training" element={<TrainingCenter />} />
                 <Route path="training/course/:id" element={<CourseView />} />
                 <Route path="assessments" element={<AssessmentCenter />} />
+                <Route path="onboarding" element={<OnboardingAssessment />} />
+                <Route path="learning-path" element={<AssessmentDashboard />} />
                 <Route path="profile" element={<UserProfile />} />
                 <Route path="ai-guru" element={<AIGuru />} />
                 <Route path="certificates" element={<Certificates />} />
+                <Route path="abbreviations" element={<MedicalAbbreviationsV2 />} />
               </>
             )}
             
@@ -78,6 +90,7 @@ const Layout = () => {
                 <Route path="profile" element={<UserProfile />} />
                 <Route path="reports" element={<div className="p-6"><h1 className="text-2xl font-bold">Reports</h1><p>Coming soon...</p></div>} />
                 <Route path="analytics" element={<div className="p-6"><h1 className="text-2xl font-bold">Analytics</h1><p>Coming soon...</p></div>} />
+                <Route path="abbreviations" element={<MedicalAbbreviationsV2 />} />
               </>
             )}
             
@@ -86,11 +99,14 @@ const Layout = () => {
               <>
                 <Route index element={<AdminDashboard />} />
                 <Route path="waitlist" element={<WaitlistManagement />} />
-                <Route path="content" element={<div className="p-6"><h1 className="text-2xl font-bold">Content Management</h1><p>Coming soon...</p></div>} />
+                <Route path="analytics" element={<AnalyticsDashboard />} />
+                <Route path="content" element={<ContentManagement />} />
+                <Route path="users" element={<UserManagement />} />
+                <Route path="system-analytics" element={<SystemAnalytics />} />
+                <Route path="settings" element={<Settings />} />
+                <Route path="api-docs" element={<APIDocumentation />} />
+                <Route path="abbreviations" element={<MedicalAbbreviationsV2 />} />
                 <Route path="profile" element={<UserProfile />} />
-                <Route path="users" element={<div className="p-6"><h1 className="text-2xl font-bold">User Management</h1><p>Coming soon...</p></div>} />
-                <Route path="analytics" element={<div className="p-6"><h1 className="text-2xl font-bold">System Analytics</h1><p>Coming soon...</p></div>} />
-                <Route path="settings" element={<div className="p-6"><h1 className="text-2xl font-bold">Settings</h1><p>Coming soon...</p></div>} />
               </>
             )}
           </Routes>
