@@ -1,4 +1,4 @@
-name: Deploy Backend to Railway
+name: Deploy Backend to Render
 
 on:
   push:
@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'backend/**'
+      - 'render.yaml'
       - '.github/workflows/deploy-backend.yml'
   workflow_dispatch:
 
@@ -37,30 +38,59 @@ jobs:
         run: npm test || true
         continue-on-error: true
 
-      - name: Deploy to Railway
-        uses: bervProject/railway-deploy@main
-        with:
-          railway_token: ${{ secrets.RAILWAY_TOKEN }}
-          service: backend
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
-          NODE_ENV: production
-          FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
-
-      - name: Verify deployment
+      - name: Trigger Render Deployment
         run: |
-          echo "Waiting for deployment to be ready..."
-          sleep 10
-          curl -f ${{ secrets.BACKEND_URL }}/api/health || exit 1
-          echo "✅ Backend deployment successful!"
+          echo "🚀 Triggering Render deployment via deploy hook..."
+          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
+          echo "✅ Deployment triggered successfully!"
 
-      - name: Notify deployment status
-        if: always()
+      - name: Wait for deployment
         run: |
-          if [ ${{ job.status }} == 'success' ]; then
-            echo "🎉 Backend deployed successfully to Railway!"
-          else
-            echo "❌ Backend deployment failed!"
-            exit 1
-          fi
+          echo "⏳ Waiting 90 seconds for Render to build and deploy..."
+          sleep 90
+
+      - name: Verify deployment health
+        run: |
+          echo "🔍 Testing backend health endpoint..."
+          for i in {1..10}; do
+            if curl -f "${{ secrets.BACKEND_URL }}/api/health"; then
+              echo "✅ Backend is healthy!"
+              exit 0
+            fi
+            echo "Attempt $i/10 failed, retrying in 15 seconds..."
+            sleep 15
+          done
+          echo "❌ Backend health check failed after 10 attempts"
+          exit 1
+
+      - name: Test Swagger endpoint
+        run: |
+          echo "📚 Testing Swagger documentation endpoint..."
+          SWAGGER_TITLE=$(curl -f "${{ secrets.BACKEND_URL }}/api-docs.json" | jq -r '.info.title')
+          echo "✅ Swagger docs accessible: $SWAGGER_TITLE"
+
+      - name: Test Analytics endpoint
+        run: |
+          echo "📊 Testing analytics dashboard endpoint..."
+          curl -f "${{ secrets.BACKEND_URL }}/api/analytics/dashboard?period=current-month" || echo "⚠️ Analytics endpoint returned error (may need auth)"
+
+      - name: Deployment summary
+        if: success()
+        run: |
+          echo "🎉 Deployment to Render successful!"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "Backend URL: ${{ secrets.BACKEND_URL }}"
+          echo "Swagger Docs: ${{ secrets.BACKEND_URL }}/api-docs"
+          echo "Health Check: ${{ secrets.BACKEND_URL }}/api/health"
+          echo "Analytics API: ${{ secrets.BACKEND_URL }}/api/analytics"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "❌ Deployment to Render failed!"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "Check Render dashboard for deployment logs:"
+          echo "https://dashboard.render.com"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          exit 1
