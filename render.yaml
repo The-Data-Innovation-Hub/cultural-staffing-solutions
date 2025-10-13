@@ -8,10 +8,10 @@ services:
     name: cultural-staffing-backend
     runtime: node
     region: oregon  # or: singapore, frankfurt, oregon
-    plan: free  # or: starter, standard, pro
+    plan: starter  # upgraded from free for more RAM and no sleep
     branch: main
     rootDir: backend
-    buildCommand: npm install && npm run build
+    buildCommand: npm ci --production=false && npm run build
     startCommand: npm start
     healthCheckPath: /api/health
     autoDeploy: true
