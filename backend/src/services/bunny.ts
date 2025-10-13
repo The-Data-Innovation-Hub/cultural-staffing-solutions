@@ -45,7 +45,10 @@ export async function uploadToBunny(filePath: string, remotePath: string): Promi
       headers: {
         'AccessKey': BUNNY_STORAGE_API_KEY,
         'Content-Type': 'application/octet-stream',
+        'accept': 'application/json',
       },
+      maxBodyLength: Infinity,
+      maxContentLength: Infinity,
     });
 
     console.log('Bunny upload successful:', response.status);
