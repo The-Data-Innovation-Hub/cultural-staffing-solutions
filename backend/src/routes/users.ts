@@ -4,6 +4,7 @@ import { requireAuth } from '../middleware/auth';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import { uploadToBunny, deleteFromBunny, extractRemotePath } from '../services/bunny';
 
 const router = express.Router();
 
@@ -138,21 +139,28 @@ router.post('/profile-image', requireAuth, upload.single('profileImage'), async 
       });
     }
 
-    // Generate URL for the uploaded image
-    const imageUrl = `/uploads/profiles/${req.file.filename}`;
+    // Upload to Bunny.net CDN
+    const remotePath = `/profiles/${req.file.filename}`;
+    const cdnUrl = await uploadToBunny(req.file.path, remotePath);
 
-    // Get old profile image to delete it
+    // Clean up local temp file
+    if (fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path);
+    }
+
+    // Get old profile image to delete it from Bunny
     const oldImageQuery = 'SELECT profile_image FROM users WHERE id = $1';
     const oldImageResult = await db.query(oldImageQuery, [userId]);
 
     if (oldImageResult.rows.length > 0 && oldImageResult.rows[0].profile_image) {
-      const oldImagePath = path.join(__dirname, '../..', oldImageResult.rows[0].profile_image);
-      if (fs.existsSync(oldImagePath)) {
-        fs.unlinkSync(oldImagePath);
+      const oldImageUrl = oldImageResult.rows[0].profile_image;
+      const oldRemotePath = extractRemotePath(oldImageUrl);
+      if (oldRemotePath) {
+        await deleteFromBunny(oldRemotePath);
       }
     }
 
-    // Update user's profile image in database
+    // Update user's profile image in database with CDN URL
     const query = `
       UPDATE users
       SET profile_image = $1, updated_at = NOW()
@@ -160,7 +168,7 @@ router.post('/profile-image', requireAuth, upload.single('profileImage'), async 
       RETURNING id, email, first_name, last_name, role, profile_image, created_at
     `;
 
-    const result = await db.query(query, [imageUrl, userId]);
+    const result = await db.query(query, [cdnUrl, userId]);
 
     if (result.rows.length === 0) {
       return res.status(404).json({
