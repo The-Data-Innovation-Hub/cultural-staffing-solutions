@@ -359,7 +359,9 @@ const AssessmentDashboard: React.FC = () => {
   console.log('Courses array:', courses.map(c => ({
     id: c.id,
     isEnrolled: c.isEnrolled,
-    title: c.title || c.courseTitle
+    title: c.title || c.courseTitle,
+    thumbnailUrl: c.thumbnailUrl,
+    hasThumbnail: !!c.thumbnailUrl
   })));
 
   console.log('Filtering details:', {
