@@ -1,5 +1,6 @@
 // Authentication API configuration
-const API_BASE_URL = import.meta.env.VITE_EMAIL_API_URL || 'http://localhost:3001';
+// VITE_API_URL should include /api, e.g., https://css-clinify.onrender.com/api
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 export interface User {
   id: string;
@@ -28,7 +29,7 @@ export interface SignupData extends LoginCredentials {
  */
 export async function login(credentials: LoginCredentials): Promise<{ success: boolean; user?: User; error?: string }> {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+    const response = await fetch(`${API_URL}/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -56,7 +57,7 @@ export async function login(credentials: LoginCredentials): Promise<{ success: b
  */
 export async function signup(data: SignupData): Promise<{ success: boolean; user?: User; error?: string }> {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/auth/signup`, {
+    const response = await fetch(`${API_URL}/auth/signup`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

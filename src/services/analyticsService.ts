@@ -18,7 +18,8 @@ import type {
   LearnerEngagement,
 } from '@/types/analytics';
 
-const API_BASE_URL = import.meta.env.VITE_EMAIL_API_URL || 'http://localhost:3001';
+// VITE_API_URL should include /api, e.g., https://css-clinify.onrender.com/api
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 // ============================================================================
 // Dashboard Overview
@@ -32,7 +33,7 @@ export async function getAnalyticsDashboard(
   if (organizationId) params.append('organizationId', organizationId);
   if (period) params.append('period', period);
 
-  const response = await fetch(`${API_BASE_URL}/api/analytics/dashboard?${params}`, {
+  const response = await fetch(`${API_URL}/analytics/dashboard?${params}`, {
     credentials: 'include',
   });
 
@@ -49,8 +50,8 @@ export async function getAnalyticsDashboard(
 
 export async function getPerformanceMetrics(userId?: string): Promise<PerformanceMetrics> {
   const endpoint = userId
-    ? `${API_BASE_URL}/api/analytics/performance/${userId}`
-    : `${API_BASE_URL}/api/analytics/performance/me`;
+    ? `${API_URL}/analytics/performance/${userId}`
+    : `${API_URL}/analytics/performance/me`;
 
   const response = await fetch(endpoint, {
     credentials: 'include',
@@ -64,7 +65,7 @@ export async function getPerformanceMetrics(userId?: string): Promise<Performanc
 }
 
 export async function getTeamPerformanceMetrics(): Promise<PerformanceMetrics[]> {
-  const response = await fetch(`${API_BASE_URL}/api/analytics/performance/team`, {
+  const response = await fetch(`${API_URL}/analytics/performance/team`, {
     credentials: 'include',
   });
 
@@ -81,8 +82,8 @@ export async function getTeamPerformanceMetrics(): Promise<PerformanceMetrics[]>
 
 export async function getSkillGapAnalysis(userId?: string): Promise<SkillGapAnalysis> {
   const endpoint = userId
-    ? `${API_BASE_URL}/api/analytics/skills/gaps/${userId}`
-    : `${API_BASE_URL}/api/analytics/skills/gaps/me`;
+    ? `${API_URL}/analytics/skills/gaps/${userId}`
+    : `${API_URL}/analytics/skills/gaps/me`;
 
   const response = await fetch(endpoint, {
     credentials: 'include',
@@ -96,7 +97,7 @@ export async function getSkillGapAnalysis(userId?: string): Promise<SkillGapAnal
 }
 
 export async function getOrganizationSkillGaps(): Promise<SkillGapAnalysis[]> {
-  const response = await fetch(`${API_BASE_URL}/api/analytics/skills/gaps`, {
+  const response = await fetch(`${API_URL}/analytics/skills/gaps`, {
     credentials: 'include',
   });
 
@@ -115,8 +116,8 @@ export async function getTrainingEffectiveness(
   courseId?: string
 ): Promise<TrainingEffectivenessMetrics | TrainingEffectivenessMetrics[]> {
   const endpoint = courseId
-    ? `${API_BASE_URL}/api/analytics/training/effectiveness/${courseId}`
-    : `${API_BASE_URL}/api/analytics/training/effectiveness`;
+    ? `${API_URL}/analytics/training/effectiveness/${courseId}`
+    : `${API_URL}/analytics/training/effectiveness`;
 
   const response = await fetch(endpoint, {
     credentials: 'include',
@@ -137,7 +138,7 @@ export async function getLearnerEngagement(
   if (userId) params.append('userId', userId);
   if (courseId) params.append('courseId', courseId);
 
-  const response = await fetch(`${API_BASE_URL}/api/analytics/training/engagement?${params}`, {
+  const response = await fetch(`${API_URL}/analytics/training/engagement?${params}`, {
     credentials: 'include',
   });
 
@@ -154,8 +155,8 @@ export async function getLearnerEngagement(
 
 export async function getSentimentAnalysis(userId?: string): Promise<SentimentAnalysis> {
   const endpoint = userId
-    ? `${API_BASE_URL}/api/analytics/sentiment/${userId}`
-    : `${API_BASE_URL}/api/analytics/sentiment/me`;
+    ? `${API_URL}/analytics/sentiment/${userId}`
+    : `${API_URL}/analytics/sentiment/me`;
 
   const response = await fetch(endpoint, {
     credentials: 'include',
@@ -173,7 +174,7 @@ export async function submitFeedback(feedbackData: {
   responses: Record<string, any>;
   rawText?: string;
 }): Promise<void> {
-  const response = await fetch(`${API_BASE_URL}/api/analytics/sentiment/feedback`, {
+  const response = await fetch(`${API_URL}/analytics/sentiment/feedback`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -193,8 +194,8 @@ export async function submitFeedback(feedbackData: {
 
 export async function getRetentionPrediction(userId?: string): Promise<RetentionPrediction> {
   const endpoint = userId
-    ? `${API_BASE_URL}/api/analytics/retention/prediction/${userId}`
-    : `${API_BASE_URL}/api/analytics/retention/prediction/me`;
+    ? `${API_URL}/analytics/retention/prediction/${userId}`
+    : `${API_URL}/analytics/retention/prediction/me`;
 
   const response = await fetch(endpoint, {
     credentials: 'include',
@@ -208,7 +209,7 @@ export async function getRetentionPrediction(userId?: string): Promise<Retention
 }
 
 export async function getHighRiskEmployees(): Promise<RetentionPrediction[]> {
-  const response = await fetch(`${API_BASE_URL}/api/analytics/retention/high-risk`, {
+  const response = await fetch(`${API_URL}/analytics/retention/high-risk`, {
     credentials: 'include',
   });
 
@@ -231,7 +232,7 @@ export async function getAnalyticsAlerts(
   if (category) params.append('category', category);
   if (severity) params.append('severity', severity);
 
-  const response = await fetch(`${API_BASE_URL}/api/analytics/alerts?${params}`, {
+  const response = await fetch(`${API_URL}/analytics/alerts?${params}`, {
     credentials: 'include',
   });
 
@@ -246,7 +247,7 @@ export async function getAIInsights(category?: string): Promise<AIInsight[]> {
   const params = new URLSearchParams();
   if (category) params.append('category', category);
 
-  const response = await fetch(`${API_BASE_URL}/api/analytics/insights?${params}`, {
+  const response = await fetch(`${API_URL}/analytics/insights?${params}`, {
     credentials: 'include',
   });
 
@@ -258,7 +259,7 @@ export async function getAIInsights(category?: string): Promise<AIInsight[]> {
 }
 
 export async function resolveAlert(alertId: string): Promise<void> {
-  const response = await fetch(`${API_BASE_URL}/api/analytics/alerts/${alertId}/resolve`, {
+  const response = await fetch(`${API_URL}/analytics/alerts/${alertId}/resolve`, {
     method: 'PATCH',
     credentials: 'include',
   });
@@ -278,7 +279,7 @@ export async function trackInteraction(interactionData: {
   entityId: string;
   metadata?: Record<string, any>;
 }): Promise<void> {
-  const response = await fetch(`${API_BASE_URL}/api/analytics/track`, {
+  const response = await fetch(`${API_URL}/analytics/track`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
