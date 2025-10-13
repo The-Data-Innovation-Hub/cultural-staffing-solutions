@@ -33,20 +33,36 @@ export async function uploadToBunny(filePath: string, remotePath: string): Promi
     // Upload to Bunny storage
     const uploadUrl = `${BUNNY_STORAGE_URL}/${BUNNY_STORAGE_ZONE_NAME}${remotePath}`;
 
-    await axios.put(uploadUrl, fileBuffer, {
+    console.log('Uploading to Bunny.net:', {
+      url: uploadUrl,
+      remotePath,
+      fileSize: fileBuffer.length,
+      hasApiKey: !!BUNNY_STORAGE_API_KEY,
+      apiKeyLength: BUNNY_STORAGE_API_KEY?.length
+    });
+
+    const response = await axios.put(uploadUrl, fileBuffer, {
       headers: {
         'AccessKey': BUNNY_STORAGE_API_KEY,
         'Content-Type': 'application/octet-stream',
       },
     });
 
+    console.log('Bunny upload successful:', response.status);
+
     // Return CDN URL
     const cdnUrl = `${BUNNY_CDN_URL}${remotePath}`;
     return cdnUrl;
 
   } catch (error: any) {
-    console.error('Error uploading to Bunny.net:', error.response?.data || error.message);
-    throw new Error(`Failed to upload file to Bunny.net: ${error.message}`);
+    console.error('Error uploading to Bunny.net:', {
+      status: error.response?.status,
+      statusText: error.response?.statusText,
+      data: error.response?.data,
+      message: error.message,
+      uploadUrl: `${BUNNY_STORAGE_URL}/${BUNNY_STORAGE_ZONE_NAME}${remotePath}`
+    });
+    throw new Error(`Failed to upload file to Bunny.net: ${error.response?.status} ${error.response?.statusText || error.message}`);
   }
 }
 
