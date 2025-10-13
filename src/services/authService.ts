@@ -78,3 +78,29 @@ export async function signup(data: SignupData): Promise<{ success: boolean; user
     return { success: false, error: error.message || 'An error occurred during signup' };
   }
 }
+
+/**
+ * Logout the current user and destroy session
+ */
+export async function logout(): Promise<{ success: boolean; error?: string }> {
+  try {
+    const response = await fetch(`${API_URL}/auth/logout`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include', // Important: send session cookie
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      return { success: false, error: result.message || 'Logout failed' };
+    }
+
+    return { success: true };
+  } catch (error: any) {
+    console.error('Logout error:', error);
+    return { success: false, error: error.message || 'An error occurred during logout' };
+  }
+}

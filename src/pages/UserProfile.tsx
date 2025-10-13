@@ -39,8 +39,8 @@ const UserProfile = () => {
     .toUpperCase()
     .slice(0, 2);
 
-  const handleSignOut = () => {
-    signOut();
+  const handleSignOut = async () => {
+    await signOut();
     navigate('/login');
   };
 

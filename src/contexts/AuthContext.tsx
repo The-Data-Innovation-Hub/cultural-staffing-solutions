@@ -1,12 +1,12 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { login as dbLogin, User } from '@/services/authService';
+import { login as dbLogin, logout as dbLogout, User } from '@/services/authService';
 
 interface AuthContextType {
   isLoaded: boolean;
   isSignedIn: boolean;
   user: User | null;
   signIn: (email: string, password: string) => Promise<void>;
-  signOut: () => void;
+  signOut: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -43,10 +43,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const signOut = () => {
-    setUser(null);
-    setIsSignedIn(false);
-    localStorage.removeItem('authUser');
+  const signOut = async () => {
+    try {
+      // Call backend logout to destroy session
+      await dbLogout();
+    } catch (error) {
+      console.error('Error during logout:', error);
+    } finally {
+      // Always clear local state regardless of API call result
+      setUser(null);
+      setIsSignedIn(false);
+      localStorage.removeItem('authUser');
+    }
   };
 
   return (
