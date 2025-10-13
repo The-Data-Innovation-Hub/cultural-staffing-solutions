@@ -337,7 +337,7 @@ const AssessmentDashboard: React.FC = () => {
     ? apiCompletedCourses
     : courses.filter(c => c.isCompleted);
 
-  // Debug logging
+  // Debug logging - v1.1
   console.log('Dashboard Debug:', {
     apiLearningPath: apiLearningPath?.id,
     apiCoursesCount: apiCourses.length,
@@ -345,7 +345,8 @@ const AssessmentDashboard: React.FC = () => {
     enrolledCoursesCount: enrolledCourses.length,
     coursesUsed: courses.length,
     isLoading,
-    hasError
+    hasError,
+    timestamp: new Date().toISOString()
   });
 
   // Debug enrolled courses
