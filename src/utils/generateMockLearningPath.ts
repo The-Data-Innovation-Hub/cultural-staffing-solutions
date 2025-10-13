@@ -159,33 +159,52 @@ export const generateMockLearningPath = (assessmentData: AssessmentData): {
   let courseOrder = 1;
 
   // Cultural course (always recommended for international workers)
+  // Auto-enroll in first course with some progress to simulate active learning
   courses.push({
     id: `course-cultural-${courseOrder}`,
     learningPathId,
     courseId: 'c-cultural-101',
+    // Required properties
+    title: 'Cultural Competency in Healthcare',
+    description: 'Navigate cultural differences and provide patient-centered care',
+    category: 'Cultural',
+    duration: 120,
+    difficulty: 'beginner',
+    // Backward compatibility properties
     courseTitle: 'Cultural Competency in Healthcare',
     courseDescription: 'Navigate cultural differences and provide patient-centered care',
-    category: 'Cultural',
     durationMinutes: 120,
     difficultyLevel: 'beginner',
     contentTypes: ['video', 'reading', 'interactive'],
     priorityOrder: courseOrder++,
     isRequired: true,
-    isEnrolled: false,
+    isEnrolled: true,  // Auto-enroll in first course
     isCompleted: false,
-    progressPercentage: 0,
+    progressPercentage: 35,  // Show some progress
+    enrolledAt: now,
   });
 
   // Add courses for low-rated skills
+  // Auto-enroll in first low-skill course
+  let enrolledInSkillCourse = false;
   Object.entries(skillRatings).forEach(([skill, rating]) => {
     if (rating <= 2) {
+      const isFirstSkillCourse = !enrolledInSkillCourse;
+      const courseTitle = `${skill} Fundamentals`;
+      const courseDesc = `Master essential ${skill.toLowerCase()} skills`;
       courses.push({
         id: `course-${skill.toLowerCase().replace(/\s+/g, '-')}-${courseOrder}`,
         learningPathId,
         courseId: `c-${skill.toLowerCase().replace(/\s+/g, '-')}`,
-        courseTitle: `${skill} Fundamentals`,
-        courseDescription: `Master essential ${skill.toLowerCase()} skills`,
+        // Required properties
+        title: courseTitle,
+        description: courseDesc,
         category: 'Technical',
+        duration: 90,
+        difficulty: difficultyLevel,
+        // Backward compatibility properties
+        courseTitle,
+        courseDescription: courseDesc,
         durationMinutes: 90,
         difficultyLevel,
         contentTypes: assessmentData.learningPreferences?.primaryStyle === 'visual'
@@ -193,10 +212,12 @@ export const generateMockLearningPath = (assessmentData: AssessmentData): {
           : ['reading', 'quiz'],
         priorityOrder: courseOrder++,
         isRequired: true,
-        isEnrolled: false,
+        isEnrolled: isFirstSkillCourse,  // Enroll in first low-skill course
         isCompleted: false,
-        progressPercentage: 0,
+        progressPercentage: isFirstSkillCourse ? 0 : 0,
+        enrolledAt: isFirstSkillCourse ? now : undefined,
       });
+      if (isFirstSkillCourse) enrolledInSkillCourse = true;
     }
   });
 
@@ -210,14 +231,21 @@ export const generateMockLearningPath = (assessmentData: AssessmentData): {
   };
 
   const generalCourses = roleCourses[assessmentData.roleSelection || 'other'] || roleCourses.other;
-  generalCourses.slice(0, 3).forEach((title) => {
+  generalCourses.slice(0, 3).forEach((courseTitle) => {
+    const courseDesc = `Enhance your ${courseTitle.toLowerCase()} capabilities`;
     courses.push({
       id: `course-general-${courseOrder}`,
       learningPathId,
-      courseId: `c-${title.toLowerCase().replace(/\s+/g, '-')}`,
-      courseTitle: title,
-      courseDescription: `Enhance your ${title.toLowerCase()} capabilities`,
+      courseId: `c-${courseTitle.toLowerCase().replace(/\s+/g, '-')}`,
+      // Required properties
+      title: courseTitle,
+      description: courseDesc,
       category: 'Professional Development',
+      duration: 60,
+      difficulty: difficultyLevel,
+      // Backward compatibility properties
+      courseTitle,
+      courseDescription: courseDesc,
       durationMinutes: 60,
       difficultyLevel,
       contentTypes: ['video', 'reading'],
