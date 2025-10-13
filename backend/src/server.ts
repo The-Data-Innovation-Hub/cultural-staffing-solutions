@@ -9,6 +9,7 @@ import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
+import connectPgSimple from 'connect-pg-simple';
 import dotenv from 'dotenv';
 import { Pool } from 'pg';
 import swaggerUi from 'swagger-ui-express';
@@ -81,8 +82,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+// Create PostgreSQL session store
+const PgSession = connectPgSimple(session);
+const sessionStore = new PgSession({
+  pool: db,
+  tableName: 'session', // Table will be auto-created
+  createTableIfMissing: true
+});
+
 // Session middleware
 app.use(session({
+  store: sessionStore,
   secret: process.env.SESSION_SECRET || 'your-secret-key',
   resave: false,
   saveUninitialized: false,
