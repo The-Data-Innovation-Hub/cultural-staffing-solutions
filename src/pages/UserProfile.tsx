@@ -27,7 +27,7 @@ const UserProfile = () => {
     email: user.email,
     role: user.role.charAt(0).toUpperCase() + user.role.slice(1),
     department: "Healthcare",
-    joinDate: format(new Date(user.createdAt), "MMMM yyyy"),
+    joinDate: user.createdAt ? format(new Date(user.createdAt), "MMMM yyyy") : "N/A",
     location: "Belfast, Northern Ireland",
     imageUrl: user.profileImage,
   };
