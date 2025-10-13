@@ -542,11 +542,11 @@ const AssessmentDashboard: React.FC = () => {
                           <Play className="w-6 h-6 text-css-gold ml-1" />
                         </div>
                       </div>
-                      {course.progressPercentage > 0 && (
+                      {(course.progressPercentage || 0) > 0 && (
                         <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/20">
                           <div
                             className="h-full bg-css-gold"
-                            style={{ width: `${course.progressPercentage}%` }}
+                            style={{ width: `${course.progressPercentage || 0}%` }}
                           />
                         </div>
                       )}
@@ -556,7 +556,7 @@ const AssessmentDashboard: React.FC = () => {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center space-x-2 mb-1">
                         <h3 className="font-semibold text-css-charcoal group-hover:text-css-gold transition-colors truncate">
-                          {course.courseTitle}
+                          {course.courseTitle || course.title}
                         </h3>
                         {course.isRequired && (
                           <span className="px-2 py-0.5 text-xs font-semibold bg-red-100 text-red-700 rounded border border-red-300 flex-shrink-0">
@@ -564,13 +564,13 @@ const AssessmentDashboard: React.FC = () => {
                           </span>
                         )}
                       </div>
-                      <p className="text-sm text-css-grey-dark mb-2 line-clamp-2">{course.courseDescription}</p>
+                      <p className="text-sm text-css-grey-dark mb-2 line-clamp-2">{course.courseDescription || course.description}</p>
                       <div className="flex items-center space-x-4 text-xs text-css-grey">
                         <span className="flex items-center space-x-1">
                           <Clock className="w-3 h-3" />
-                          <span>{course.durationMinutes} min</span>
+                          <span>{course.durationMinutes || course.duration} min</span>
                         </span>
-                        <span className="capitalize">{course.difficultyLevel}</span>
+                        <span className="capitalize">{course.difficultyLevel || course.difficulty}</span>
                         <span className="px-2 py-0.5 bg-css-grey-light rounded">{course.category}</span>
                       </div>
                     </div>
@@ -580,12 +580,12 @@ const AssessmentDashboard: React.FC = () => {
                   <div className="space-y-1">
                     <div className="flex justify-between text-xs">
                       <span className="text-css-grey-dark">Progress</span>
-                      <span className="font-semibold text-css-charcoal">{course.progressPercentage}%</span>
+                      <span className="font-semibold text-css-charcoal">{course.progressPercentage || 0}%</span>
                     </div>
                     <div className="h-2 bg-css-grey-light rounded-full overflow-hidden">
                       <div
                         className="h-full bg-gradient-gold transition-all"
-                        style={{ width: `${course.progressPercentage}%` }}
+                        style={{ width: `${course.progressPercentage || 0}%` }}
                       />
                     </div>
                   </div>
@@ -705,15 +705,15 @@ const AssessmentDashboard: React.FC = () => {
                   {/* Course Info */}
                   <div className="p-4">
                     <h3 className="font-semibold text-css-charcoal group-hover:text-css-gold transition-colors mb-2 line-clamp-1">
-                      {course.courseTitle}
+                      {course.courseTitle || course.title}
                     </h3>
-                    <p className="text-sm text-css-grey-dark mb-3 line-clamp-2">{course.courseDescription}</p>
+                    <p className="text-sm text-css-grey-dark mb-3 line-clamp-2">{course.courseDescription || course.description}</p>
                     <div className="flex items-center justify-between text-xs text-css-grey mb-3">
                       <span className="flex items-center space-x-1">
                         <Clock className="w-3 h-3" />
-                        <span>{course.durationMinutes} min</span>
+                        <span>{course.durationMinutes || course.duration} min</span>
                       </span>
-                      <span className="capitalize">{course.difficultyLevel}</span>
+                      <span className="capitalize">{course.difficultyLevel || course.difficulty}</span>
                     </div>
                     <button className="w-full px-4 py-2 rounded-lg bg-gradient-gold text-white font-semibold text-sm shadow-neumorphic hover:shadow-neumorphic-hover transition-all">
                       Enroll Now

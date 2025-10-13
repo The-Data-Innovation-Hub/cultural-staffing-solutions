@@ -236,6 +236,19 @@ export interface RecommendedCourse {
   priorityOrder: number;
   isRequired: boolean;
   prerequisiteIds?: string[];
+
+  // Enrollment and progress tracking
+  isEnrolled?: boolean;
+  isCompleted?: boolean;
+  progressPercentage?: number;
+  enrolledAt?: string;
+  completedAt?: string;
+
+  // Alternative property names for backward compatibility
+  courseTitle?: string;
+  courseDescription?: string;
+  durationMinutes?: number;
+  difficultyLevel?: string;
 }
 
 export interface Milestone {
