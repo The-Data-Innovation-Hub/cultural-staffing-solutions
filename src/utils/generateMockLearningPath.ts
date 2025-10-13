@@ -182,11 +182,19 @@ export const generateMockLearningPath = (assessmentData: AssessmentData): {
     isCompleted: false,
     progressPercentage: 35,  // Show some progress
     enrolledAt: now,
+    thumbnailUrl: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=250&fit=crop',
   });
 
   // Add courses for low-rated skills
   // Auto-enroll in first low-skill course
   let enrolledInSkillCourse = false;
+  const skillThumbnails = [
+    'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=400&h=250&fit=crop',
+    'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=400&h=250&fit=crop',
+    'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=250&fit=crop',
+  ];
+  let thumbnailIndex = 0;
+
   Object.entries(skillRatings).forEach(([skill, rating]) => {
     if (rating <= 2) {
       const isFirstSkillCourse = !enrolledInSkillCourse;
@@ -216,6 +224,7 @@ export const generateMockLearningPath = (assessmentData: AssessmentData): {
         isCompleted: false,
         progressPercentage: isFirstSkillCourse ? 0 : 0,
         enrolledAt: isFirstSkillCourse ? now : undefined,
+        thumbnailUrl: skillThumbnails[thumbnailIndex++ % skillThumbnails.length],
       });
       if (isFirstSkillCourse) enrolledInSkillCourse = true;
     }
@@ -231,7 +240,12 @@ export const generateMockLearningPath = (assessmentData: AssessmentData): {
   };
 
   const generalCourses = roleCourses[assessmentData.roleSelection || 'other'] || roleCourses.other;
-  generalCourses.slice(0, 3).forEach((courseTitle) => {
+  const generalThumbnails = [
+    'https://images.unsplash.com/photo-1551190822-a9333d879b1f?w=400&h=250&fit=crop',
+    'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=400&h=250&fit=crop',
+    'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=250&fit=crop',
+  ];
+  generalCourses.slice(0, 3).forEach((courseTitle, idx) => {
     const courseDesc = `Enhance your ${courseTitle.toLowerCase()} capabilities`;
     courses.push({
       id: `course-general-${courseOrder}`,
@@ -254,6 +268,7 @@ export const generateMockLearningPath = (assessmentData: AssessmentData): {
       isEnrolled: false,
       isCompleted: false,
       progressPercentage: 0,
+      thumbnailUrl: generalThumbnails[idx % generalThumbnails.length],
     });
   });
 
