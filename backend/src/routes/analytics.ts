@@ -136,7 +136,7 @@ router.get('/dashboard', requireAuth, async (req, res) => {
       ${organizationId ? 'AND organization_id = $3' : ''}
     `;
 
-    const params = [dateRange.start, dateRange.end];
+    const params: (Date | string)[] = [dateRange.start, dateRange.end];
     if (organizationId) params.push(organizationId as string);
 
     const metricsResult = await db.query(metricsQuery, params);
