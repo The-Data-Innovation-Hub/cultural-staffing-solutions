@@ -24,6 +24,7 @@ import courseRoutes from './routes/courses';
 import milestoneRoutes from './routes/milestones';
 import analyticsRoutes from './routes/analytics';
 import waitlistRoutes from './routes/waitlist';
+import usersRoutes from './routes/users';
 
 // Initialize Express app
 const app = express();
@@ -80,6 +81,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+// Serve static files from uploads directory
+app.use('/uploads', express.static('uploads'));
+
 console.log('✅ JWT-based authentication initialized');
 
 // Health check endpoint - used by monitoring and CI/CD
@@ -106,6 +110,7 @@ app.get('/api-docs.json', (req, res) => {
 
 // API Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/users', usersRoutes);
 app.use('/api/assessments', assessmentRoutes);
 app.use('/api/learning-paths', learningPathRoutes);
 app.use('/api/courses', courseRoutes);

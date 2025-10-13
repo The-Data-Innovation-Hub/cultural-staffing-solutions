@@ -60,15 +60,22 @@ In the **Environment** section, add these variables:
 ```env
 DATABASE_URL=your_neon_postgresql_connection_string
 SESSION_SECRET=your_secure_random_32_char_string
+JWT_SECRET=your_secure_random_48_char_jwt_secret
 NODE_ENV=production
 PORT=10000
 FRONTEND_URL=https://your-app.vercel.app
 ```
 
-**To generate SESSION_SECRET locally:**
+**To generate SESSION_SECRET and JWT_SECRET locally:**
 ```bash
+# Generate SESSION_SECRET (minimum 32 characters)
 openssl rand -base64 32
+
+# Generate JWT_SECRET (minimum 48 characters)
+openssl rand -base64 48
 ```
+
+**⚠️ CRITICAL**: The application will NOT start without a valid JWT_SECRET (minimum 32 characters).
 
 **Important Notes:**
 - ⚠️ PORT must be `10000` on Render (they override this anyway)
@@ -475,6 +482,7 @@ After deployment, your app is accessible at:
 ```env
 DATABASE_URL=postgresql://...
 SESSION_SECRET=<32-char-random>
+JWT_SECRET=<48-char-random>
 NODE_ENV=production
 FRONTEND_URL=https://your-app.vercel.app
 ```
@@ -488,8 +496,11 @@ VITE_OPENAI_API_KEY=sk-...
 ### Useful Commands
 
 ```bash
-# Generate session secret
+# Generate session secret (minimum 32 characters)
 openssl rand -base64 32
+
+# Generate JWT secret (minimum 48 characters)
+openssl rand -base64 48
 
 # Test backend health
 curl https://your-backend.onrender.com/api/health

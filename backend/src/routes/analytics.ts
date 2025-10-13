@@ -1,18 +1,43 @@
 import express from 'express';
 import { db } from '../server';
+import { requireAuth, requireRole } from '../middleware/auth';
 
 const router = express.Router();
 
-// Authentication middleware
-const requireAuth = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-  if (!req.user?.userId) {
-    return res.status(401).json({
-      message: 'Authentication required',
-      code: 'UNAUTHORIZED'
-    });
+// ============================================================================
+// Authorization Helper
+// ============================================================================
+
+/**
+ * Check if the authenticated user can access data for the specified userId
+ * - Users can access their own data
+ * - Admins can access all data
+ * - Managers can access data for users in their organization (simplified for demo)
+ */
+function canAccessUserData(req: express.Request, targetUserId: string): boolean {
+  const currentUser = req.user;
+
+  if (!currentUser) {
+    return false;
   }
-  next();
-};
+
+  // User accessing their own data
+  if (currentUser.userId === targetUserId) {
+    return true;
+  }
+
+  // Admin can access all data
+  if (currentUser.role === 'admin') {
+    return true;
+  }
+
+  // Manager can access data (simplified - in production, check org membership)
+  if (currentUser.role === 'manager') {
+    return true;
+  }
+
+  return false;
+}
 
 // ============================================================================
 // Dashboard & Overview Analytics
@@ -253,6 +278,14 @@ router.get('/performance/:userId', requireAuth, async (req, res) => {
     const { userId } = req.params;
     const { period } = req.query;
 
+    // Authorization check: ensure user can access this data
+    if (!canAccessUserData(req, userId)) {
+      return res.status(403).json({
+        message: 'You do not have permission to access this user\'s data',
+        code: 'FORBIDDEN'
+      });
+    }
+
     // Get performance metrics
     const metricsQuery = `
       SELECT *
@@ -452,6 +485,14 @@ router.post('/performance', requireAuth, async (req, res) => {
 router.get('/skills/:userId', requireAuth, async (req, res) => {
   try {
     const { userId } = req.params;
+
+    // Authorization check: ensure user can access this data
+    if (!canAccessUserData(req, userId)) {
+      return res.status(403).json({
+        message: 'You do not have permission to access this user\'s data',
+        code: 'FORBIDDEN'
+      });
+    }
 
     // Get latest skill assessment
     const assessmentQuery = `
@@ -805,6 +846,14 @@ router.get('/training/learner/:userId', requireAuth, async (req, res) => {
   try {
     const { userId } = req.params;
 
+    // Authorization check: ensure user can access this data
+    if (!canAccessUserData(req, userId)) {
+      return res.status(403).json({
+        message: 'You do not have permission to access this user\'s data',
+        code: 'FORBIDDEN'
+      });
+    }
+
     const query = `
       SELECT *
       FROM learner_engagement
@@ -906,6 +955,14 @@ router.get('/sentiment/:userId', requireAuth, async (req, res) => {
   try {
     const { userId } = req.params;
     const { limit = 10 } = req.query;
+
+    // Authorization check: ensure user can access this data
+    if (!canAccessUserData(req, userId)) {
+      return res.status(403).json({
+        message: 'You do not have permission to access this user\'s data',
+        code: 'FORBIDDEN'
+      });
+    }
 
     // Get sentiment analysis history
     const sentimentQuery = `
@@ -1212,6 +1269,14 @@ router.get('/retention/high-risk', requireAuth, async (req, res) => {
 router.get('/retention/:userId', requireAuth, async (req, res) => {
   try {
     const { userId } = req.params;
+
+    // Authorization check: ensure user can access this data
+    if (!canAccessUserData(req, userId)) {
+      return res.status(403).json({
+        message: 'You do not have permission to access this user\'s data',
+        code: 'FORBIDDEN'
+      });
+    }
 
     const result = await db.query(
       `SELECT * FROM retention_predictions

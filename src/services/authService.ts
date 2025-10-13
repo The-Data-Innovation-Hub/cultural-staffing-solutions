@@ -14,6 +14,8 @@ export interface User {
   lastName: string;
   role: 'employee' | 'manager' | 'admin';
   profileImage?: string;
+  department?: string;
+  location?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }

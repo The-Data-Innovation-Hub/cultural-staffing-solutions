@@ -38,13 +38,19 @@
      ```
      DATABASE_URL=<your-neon-database-url>
      SESSION_SECRET=<generate-random-32-char-string>
+     JWT_SECRET=<generate-random-48-char-string>
      NODE_ENV=production
      FRONTEND_URL=https://your-app.vercel.app
      ```
-   - To generate SESSION_SECRET, run locally:
+   - To generate SESSION_SECRET and JWT_SECRET, run locally:
      ```bash
+     # Generate SESSION_SECRET (minimum 32 characters)
      openssl rand -base64 32
+
+     # Generate JWT_SECRET (minimum 48 characters)
+     openssl rand -base64 48
      ```
+   - **⚠️ CRITICAL**: The application will NOT start without a valid JWT_SECRET (minimum 32 characters)
 
 4. **Deploy**:
    - Railway auto-deploys
@@ -214,6 +220,7 @@ VITE_OPENAI_API_KEY=sk-...
 ```env
 DATABASE_URL=postgresql://...
 SESSION_SECRET=<32-char-random-string>
+JWT_SECRET=<48-char-random-string>
 NODE_ENV=production
 FRONTEND_URL=https://your-app.vercel.app
 ```
