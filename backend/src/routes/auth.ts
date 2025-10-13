@@ -60,6 +60,10 @@ router.post('/login', async (req, res) => {
       }
 
       console.log(`✅ Session saved successfully for user ${user.id}`);
+      console.log(`📧 Session cookie should be set:`, req.session.cookie);
+
+      // Add custom header to test if headers are working
+      res.setHeader('X-Session-Test', 'session-created');
 
       // Return user data (excluding password)
       res.json({
