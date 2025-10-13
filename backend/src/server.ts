@@ -94,8 +94,8 @@ const sessionStore = new PgSession({
 app.use(session({
   store: sessionStore,
   secret: process.env.SESSION_SECRET || 'your-secret-key',
-  resave: false,
-  saveUninitialized: false,
+  resave: true, // Force session to be saved back to store
+  saveUninitialized: true, // Save new sessions even if not modified
   // Required when behind a proxy to correctly set secure cookies using X-Forwarded-Proto
   proxy: true,
   cookie: {
