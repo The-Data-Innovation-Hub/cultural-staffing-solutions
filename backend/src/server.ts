@@ -103,18 +103,27 @@ console.log('✅ PostgreSQL session store initialized');
 // Session middleware
 app.use(session({
   store: sessionStore,
+  name: 'connect.sid', // Explicit cookie name
   secret: process.env.SESSION_SECRET || 'your-secret-key',
   resave: true, // Force session to be saved back to store
   saveUninitialized: true, // Save new sessions even if not modified
   // Required when behind a proxy to correctly set secure cookies using X-Forwarded-Proto
   proxy: true,
   cookie: {
-    secure: process.env.NODE_ENV === 'production',
+    secure: false, // Temporarily disable for testing
     httpOnly: true,
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    sameSite: 'lax', // Temporarily use lax instead of none for testing
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    domain: undefined // Let browser set domain automatically
   }
 }));
+
+// Log cookie configuration
+console.log('🍪 Session cookie config:', {
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+  httpOnly: true
+});
 
 // Optional: Mock authentication middleware for non-auth routes (development only)
 // TEMPORARY: Enabled for testing analytics endpoints
