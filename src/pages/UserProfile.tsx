@@ -148,6 +148,19 @@ const UserProfile = () => {
           const error = await imageResponse.json();
           throw new Error(error.message || 'Failed to upload profile image');
         }
+
+        // Get the updated user data with new profile image
+        const imageData = await imageResponse.json();
+        console.log('Profile image uploaded:', imageData);
+
+        // Immediately update the user in context and localStorage with the new image
+        if (imageData && imageData.profileImage) {
+          const currentUser = JSON.parse(localStorage.getItem('authUser') || '{}');
+          const updatedUser = { ...currentUser, profileImage: imageData.profileImage };
+          localStorage.setItem('authUser', JSON.stringify(updatedUser));
+          console.log('Updated user in localStorage:', updatedUser);
+        }
+
         setIsUploadingImage(false);
       }
 
@@ -178,8 +191,10 @@ const UserProfile = () => {
       setSelectedImage(null);
       setImagePreview(null);
 
-      // Refresh user data
+      // Refresh user data to get updated profile including any new image
+      console.log('📡 Calling refreshUser() to update profile data...');
       await refreshUser();
+      console.log('✅ refreshUser() completed. Updated user:', user);
 
       // Clear success message after 5 seconds
       setTimeout(() => {

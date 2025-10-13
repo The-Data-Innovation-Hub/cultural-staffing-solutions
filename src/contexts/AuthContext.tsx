@@ -66,6 +66,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const refreshUser = async () => {
     try {
+      console.log('🔄 Refreshing user data...');
       const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/auth/me`, {
         method: 'GET',
         credentials: 'include',
@@ -76,11 +77,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (response.ok) {
         const userData = await response.json();
+        console.log('✅ User data refreshed:', userData);
         setUser(userData);
         localStorage.setItem('authUser', JSON.stringify(userData));
+      } else {
+        console.error('❌ Failed to refresh user:', response.status, response.statusText);
       }
     } catch (error) {
-      console.error('Error refreshing user:', error);
+      console.error('❌ Error refreshing user:', error);
     }
   };
 
