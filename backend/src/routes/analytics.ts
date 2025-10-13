@@ -5,7 +5,7 @@ const router = express.Router();
 
 // Authentication middleware
 const requireAuth = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-  if (!req.session.userId) {
+  if (!req.user?.userId) {
     return res.status(401).json({
       message: 'Authentication required',
       code: 'UNAUTHORIZED'
@@ -1490,7 +1490,7 @@ router.get('/insights', requireAuth, async (req, res) => {
 router.post('/interactions', requireAuth, async (req, res) => {
   try {
     const { eventType, entityType, entityId, metadata } = req.body;
-    const userId = req.session.userId;
+    const userId = req.user?.userId;
 
     const query = `
       INSERT INTO user_interactions (

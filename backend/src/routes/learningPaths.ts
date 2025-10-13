@@ -6,7 +6,7 @@ const router = express.Router();
 // GET /api/learning-paths/me - Get current user's learning path
 router.get('/me', async (req, res) => {
   try {
-    const userId = req.session.userId;
+    const userId = req.user?.userId;
 
     const query = `
       SELECT * FROM learning_paths

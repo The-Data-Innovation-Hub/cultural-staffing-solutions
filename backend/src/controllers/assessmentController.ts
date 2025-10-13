@@ -17,7 +17,7 @@ export const submitAssessment = async (req: Request, res: Response) => {
       assessmentState
     } = req.body;
 
-    const userId = req.session.userId;
+    const userId = req.user?.userId;
 
     if (!userId) {
       return res.status(401).json({
@@ -159,7 +159,7 @@ export const submitAssessment = async (req: Request, res: Response) => {
  */
 export const getAssessmentHistory = async (req: Request, res: Response) => {
   try {
-    const userId = req.session.userId;
+    const userId = req.user?.userId;
 
     if (!userId) {
       return res.status(401).json({

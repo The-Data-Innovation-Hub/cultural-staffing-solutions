@@ -8,8 +8,6 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import session from 'express-session';
-import connectPgSimple from 'connect-pg-simple';
 import dotenv from 'dotenv';
 import { Pool } from 'pg';
 import swaggerUi from 'swagger-ui-express';
@@ -82,57 +80,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Create PostgreSQL session store
-const PgSession = connectPgSimple(session);
-const sessionStore = new PgSession({
-  pool: db,
-  tableName: 'session', // Table will be auto-created
-  createTableIfMissing: true,
-  errorLog: (error) => {
-    console.error('❌ Session store error:', error);
-  }
-});
-
-// Log session store events
-sessionStore.on('error', (error) => {
-  console.error('❌ Session store error event:', error);
-});
-
-console.log('✅ PostgreSQL session store initialized');
-
-// Session middleware
-app.use(session({
-  store: sessionStore,
-  name: 'connect.sid', // Explicit cookie name
-  secret: process.env.SESSION_SECRET || 'your-secret-key',
-  resave: true, // Force session to be saved back to store
-  saveUninitialized: true, // Save new sessions even if not modified
-  // Required when behind a proxy to correctly set secure cookies using X-Forwarded-Proto
-  proxy: true,
-  cookie: {
-    secure: false, // Temporarily disable for testing
-    httpOnly: true,
-    sameSite: 'lax', // Temporarily use lax instead of none for testing
-    maxAge: 24 * 60 * 60 * 1000, // 24 hours
-    domain: undefined // Let browser set domain automatically
-  }
-}));
-
-// Log cookie configuration
-console.log('🍪 Session cookie config:', {
-  secure: process.env.NODE_ENV === 'production',
-  sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-  httpOnly: true
-});
-
-// Optional: Mock authentication middleware for non-auth routes (development only)
-// TEMPORARY: Enabled for testing analytics endpoints
-app.use((req, res, next) => {
-  if (!req.session.userId && !req.path.startsWith('/api/auth') && process.env.NODE_ENV === 'development') {
-    req.session.userId = '0d21d737-353f-4b6d-b0a9-93cccb43730f';
-  }
-  next();
-});
+console.log('✅ JWT-based authentication initialized');
 
 // Health check endpoint - used by monitoring and CI/CD
 app.get('/api/health', (req, res) => {
@@ -140,15 +88,8 @@ app.get('/api/health', (req, res) => {
     status: 'healthy',
     timestamp: new Date().toISOString(),
     version: '1.0.0',
-    environment: process.env.NODE_ENV || 'development'
-  });
-});
-
-// Debug endpoint to check current session
-app.get('/api/debug/session', (req, res) => {
-  res.json({
-    userId: req.session.userId,
-    sessionID: req.sessionID
+    environment: process.env.NODE_ENV || 'development',
+    auth: 'JWT'
   });
 });
 

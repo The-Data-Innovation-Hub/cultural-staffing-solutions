@@ -7,7 +7,7 @@ const router = express.Router();
 router.post('/:id/enroll', async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.session.userId;
+    const userId = req.user?.userId;
 
     const query = `
       UPDATE recommended_courses
