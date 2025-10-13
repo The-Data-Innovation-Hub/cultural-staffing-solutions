@@ -1,6 +1,7 @@
 import express from 'express';
 import { db } from '../server';
 import bcrypt from 'bcrypt';
+import { generateAccessToken, generateRefreshToken, verifyToken } from '../utils/jwt';
 
 const router = express.Router();
 
@@ -44,36 +45,43 @@ router.post('/login', async (req, res) => {
       });
     }
 
-    // Set session
-    req.session.userId = user.id;
+    // Generate JWT tokens
+    const tokenPayload = {
+      userId: user.id,
+      email: user.email,
+      role: user.role
+    };
 
-    console.log(`🔐 Login attempt for user ${user.id}, session ID: ${req.sessionID}`);
+    const accessToken = generateAccessToken(tokenPayload);
+    const refreshToken = generateRefreshToken(tokenPayload);
 
-    // Explicitly save session to ensure cookie is set
-    req.session.save((err) => {
-      if (err) {
-        console.error('❌ Error saving session:', err);
-        return res.status(500).json({
-          message: 'Failed to create session',
-          code: 'SESSION_ERROR'
-        });
-      }
+    console.log(`✅ JWT tokens generated for user ${user.id}`);
 
-      console.log(`✅ Session saved successfully for user ${user.id}`);
-      console.log(`📧 Session cookie should be set:`, req.session.cookie);
+    // Set tokens in httpOnly cookies
+    res.cookie('accessToken', accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    });
 
-      // Add custom header to test if headers are working
-      res.setHeader('X-Session-Test', 'session-created');
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    });
 
-      // Return user data (excluding password)
-      res.json({
-        id: user.id,
-        email: user.email,
-        firstName: user.first_name,
-        lastName: user.last_name,
-        role: user.role,
-        profileImage: user.profile_image
-      });
+    // Also return tokens in response body for flexibility
+    res.json({
+      id: user.id,
+      email: user.email,
+      firstName: user.first_name,
+      lastName: user.last_name,
+      role: user.role,
+      profileImage: user.profile_image,
+      accessToken,
+      refreshToken
     });
 
   } catch (error: any) {
@@ -87,26 +95,42 @@ router.post('/login', async (req, res) => {
 
 // POST /api/auth/logout
 router.post('/logout', (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      return res.status(500).json({
-        message: 'Logout failed',
-        code: 'INTERNAL_ERROR'
-      });
-    }
-    res.clearCookie('connect.sid');
-    res.json({ message: 'Logged out successfully' });
+  // Clear JWT cookies
+  res.clearCookie('accessToken', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
   });
+
+  res.clearCookie('refreshToken', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+  });
+
+  res.json({ message: 'Logged out successfully' });
 });
 
 // GET /api/auth/me
 router.get('/me', async (req, res) => {
   try {
-    const userId = req.session.userId;
+    // Get token from cookie or Authorization header
+    const token = req.cookies.accessToken || req.headers.authorization?.replace('Bearer ', '');
 
-    if (!userId) {
+    if (!token) {
       return res.status(401).json({
         message: 'Not authenticated',
+        code: 'UNAUTHORIZED'
+      });
+    }
+
+    // Verify and decode token
+    let decoded;
+    try {
+      decoded = verifyToken(token);
+    } catch (error) {
+      return res.status(401).json({
+        message: 'Invalid or expired token',
         code: 'UNAUTHORIZED'
       });
     }
@@ -117,7 +141,7 @@ router.get('/me', async (req, res) => {
       WHERE id = $1
     `;
 
-    const result = await db.query(query, [userId]);
+    const result = await db.query(query, [decoded.userId]);
 
     if (result.rows.length === 0) {
       return res.status(404).json({

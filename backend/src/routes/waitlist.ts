@@ -1,16 +1,9 @@
 import express from 'express';
 import crypto from 'crypto';
 import { db } from '../server';
+import { requireAuth } from '../middleware/auth';
 
 const router = express.Router();
-
-// Middleware to require authentication (except for adding to waitlist)
-const requireAuth = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-  if (!req.session.userId) {
-    return res.status(401).json({ message: 'Authentication required', code: 'UNAUTHORIZED' });
-  }
-  next();
-};
 
 /**
  * @openapi
@@ -255,7 +248,7 @@ router.patch('/:id/status', requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
-    const adminUserId = req.session.userId;
+    const adminUserId = req.user?.userId;
     const ipAddress = req.ip || req.socket.remoteAddress;
 
     // Get current entry
@@ -322,7 +315,7 @@ router.patch('/:id/notes', requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
     const { notes } = req.body;
-    const adminUserId = req.session.userId;
+    const adminUserId = req.user?.userId;
     const ipAddress = req.ip || req.socket.remoteAddress;
 
     // Get current entry
