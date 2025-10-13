@@ -343,51 +343,15 @@ const AssessmentDashboard: React.FC = () => {
     ? apiCompletedCourses
     : courses.filter(c => c.isCompleted);
 
-  // Debug logging - v1.1
-  console.log('Dashboard Debug:', {
-    apiLearningPath: apiLearningPath?.id,
-    apiCoursesCount: apiCourses.length,
-    apiEnrolledCount: apiEnrolledCourses.length,
-    enrolledCoursesCount: enrolledCourses.length,
-    coursesUsed: courses.length,
-    isLoading,
-    hasError,
-    timestamp: new Date().toISOString()
-  });
-
-  // Debug enrolled courses
-  console.log('Courses array:', courses.map(c => ({
-    id: c.id,
-    isEnrolled: c.isEnrolled,
-    title: c.title || c.courseTitle,
-    thumbnailUrl: c.thumbnailUrl,
-    hasThumbnail: !!c.thumbnailUrl
-  })));
-
-  console.log('Filtering details:', {
-    coursesLength: courses.length,
-    coursesSource: apiCourses.length > 0 ? 'API' : 'Mock',
-    apiCoursesLength: apiCourses.length,
-    mockCoursesLength: mockRecommendedCourses.length,
-    apiLearningPath: !!apiLearningPath,
-    hasError,
-    mockCourse1IsEnrolled: mockRecommendedCourses[0]?.isEnrolled,
-    mockCourse2IsEnrolled: mockRecommendedCourses[1]?.isEnrolled,
-    course1IsEnrolled: courses[0]?.isEnrolled,
-    course2IsEnrolled: courses[1]?.isEnrolled,
-  });
-
-  if (enrolledCourses.length > 0) {
-    console.log('Enrolled Courses:', enrolledCourses.map(c => ({
-      id: c.id,
-      title: c.title || c.courseTitle,
-      courseTitle: c.courseTitle,
-      hasTitle: !!(c.title || c.courseTitle),
-      progressPercentage: c.progressPercentage,
-      isEnrolled: c.isEnrolled
-    })));
-  } else {
-    console.log('No enrolled courses - filtering from:', courses.length, 'courses');
+  // Debug logging (can be removed in production)
+  if (process.env.NODE_ENV === 'development') {
+    console.log('Dashboard Debug:', {
+      apiLearningPath: apiLearningPath?.id,
+      enrolledCoursesCount: enrolledCourses.length,
+      coursesUsed: courses.length,
+      isLoading,
+      hasError
+    });
   }
   const totalProgress = apiLearningPath ? apiTotalProgress : (
     enrolledCourses.length > 0
