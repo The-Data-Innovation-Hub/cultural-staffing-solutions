@@ -18,8 +18,25 @@ import type {
   ReviewCycle,
   CheckIn,
 } from '@/types/assessment';
+import { getAccessToken } from './authService';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+
+/**
+ * Get headers with JWT token for authenticated requests
+ */
+function getAuthHeaders(): HeadersInit {
+  const headers: HeadersInit = {
+    'Content-Type': 'application/json',
+  };
+
+  const token = getAccessToken();
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  return headers;
+}
 
 // ============================================================================
 // Assessment Submission
@@ -45,9 +62,7 @@ export const submitAssessment = async (
   try {
     const response = await fetch(`${API_BASE_URL}/assessments`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: getAuthHeaders(),
       credentials: 'include',
       body: JSON.stringify(data),
     });
@@ -76,9 +91,7 @@ export const getLearningPath = async (userId?: string): Promise<LearningPath | n
 
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: getAuthHeaders(),
       credentials: 'include',
     });
 
@@ -103,9 +116,7 @@ export const updateLearningPathProgress = async (
   try {
     const response = await fetch(`${API_BASE_URL}/learning-paths/${learningPathId}`, {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: getAuthHeaders(),
       credentials: 'include',
       body: JSON.stringify(progress),
     });
@@ -129,9 +140,7 @@ export const getPriorityAreas = async (learningPathId: string): Promise<Priority
   try {
     const response = await fetch(`${API_BASE_URL}/learning-paths/${learningPathId}/priority-areas`, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: getAuthHeaders(),
       credentials: 'include',
     });
 
@@ -153,9 +162,7 @@ export const updatePriorityArea = async (
   try {
     const response = await fetch(`${API_BASE_URL}/priority-areas/${areaId}`, {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: getAuthHeaders(),
       credentials: 'include',
       body: JSON.stringify(updates),
     });
@@ -179,9 +186,7 @@ export const getRecommendedCourses = async (learningPathId: string): Promise<Rec
   try {
     const response = await fetch(`${API_BASE_URL}/learning-paths/${learningPathId}/courses`, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: getAuthHeaders(),
       credentials: 'include',
     });
 
@@ -200,9 +205,7 @@ export const enrollInCourse = async (courseId: string): Promise<RecommendedCours
   try {
     const response = await fetch(`${API_BASE_URL}/courses/${courseId}/enroll`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: getAuthHeaders(),
       credentials: 'include',
     });
 
@@ -224,9 +227,7 @@ export const updateCourseProgress = async (
   try {
     const response = await fetch(`${API_BASE_URL}/courses/${courseId}/progress`, {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: getAuthHeaders(),
       credentials: 'include',
       body: JSON.stringify({ progressPercentage }),
     });
@@ -250,9 +251,7 @@ export const getMilestones = async (learningPathId: string): Promise<Milestone[]
   try {
     const response = await fetch(`${API_BASE_URL}/learning-paths/${learningPathId}/milestones`, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: getAuthHeaders(),
       credentials: 'include',
     });
 
@@ -271,9 +270,7 @@ export const completeMilestone = async (milestoneId: string): Promise<Milestone>
   try {
     const response = await fetch(`${API_BASE_URL}/milestones/${milestoneId}/complete`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: getAuthHeaders(),
       credentials: 'include',
     });
 
@@ -296,9 +293,7 @@ export const getCurrentReviewCycle = async (): Promise<ReviewCycle | null> => {
   try {
     const response = await fetch(`${API_BASE_URL}/review-cycles/current`, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: getAuthHeaders(),
       credentials: 'include',
     });
 
@@ -320,9 +315,7 @@ export const submitCheckIn = async (data: Omit<CheckIn, 'id' | 'createdAt' | 'up
   try {
     const response = await fetch(`${API_BASE_URL}/check-ins`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: getAuthHeaders(),
       credentials: 'include',
       body: JSON.stringify(data),
     });
@@ -350,9 +343,7 @@ export const getAssessmentAnalytics = async (userId?: string): Promise<Assessmen
 
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: getAuthHeaders(),
       credentials: 'include',
     });
 
@@ -378,9 +369,7 @@ export const getAssessmentHistory = async (): Promise<AssessmentState[]> => {
   try {
     const response = await fetch(`${API_BASE_URL}/assessments/history`, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: getAuthHeaders(),
       credentials: 'include',
     });
 
@@ -399,9 +388,7 @@ export const retakeAssessment = async (): Promise<{ assessmentId: string }> => {
   try {
     const response = await fetch(`${API_BASE_URL}/assessments/retake`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: getAuthHeaders(),
       credentials: 'include',
     });
 

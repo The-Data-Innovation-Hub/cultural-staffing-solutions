@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { login as dbLogin, logout as dbLogout, User } from '@/services/authService';
+import { login as dbLogin, logout as dbLogout, User, isAuthenticated } from '@/services/authService';
 
 interface AuthContextType {
   isLoaded: boolean;
@@ -17,9 +17,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    // Check for stored session
+    // Check for JWT token and stored user
     const storedUser = localStorage.getItem('authUser');
-    if (storedUser) {
+    const hasToken = isAuthenticated();
+
+    if (hasToken && storedUser) {
       try {
         setUser(JSON.parse(storedUser));
         setIsSignedIn(true);
@@ -27,6 +29,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.error('Error parsing stored user:', error);
         localStorage.removeItem('authUser');
       }
+    } else if (!hasToken && storedUser) {
+      // Token expired but user data still exists - clear it
+      localStorage.removeItem('authUser');
     }
     setIsLoaded(true);
   }, []);
@@ -45,7 +50,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signOut = async () => {
     try {
-      // Call backend logout to destroy session
+      // Call backend logout to clear JWT cookies and tokens
       await dbLogout();
     } catch (error) {
       console.error('Error during logout:', error);
@@ -54,6 +59,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(null);
       setIsSignedIn(false);
       localStorage.removeItem('authUser');
+      // JWT tokens are cleared by dbLogout()
     }
   };
 

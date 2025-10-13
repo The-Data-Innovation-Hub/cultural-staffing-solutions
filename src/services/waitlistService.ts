@@ -1,5 +1,25 @@
 // Refactored to use backend API instead of direct database access
+import { getAccessToken } from './authService';
+
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+
+/**
+ * Get headers with JWT token for authenticated requests
+ */
+function getAuthHeaders(contentType = 'application/json'): HeadersInit {
+  const headers: HeadersInit = {};
+
+  if (contentType) {
+    headers['Content-Type'] = contentType;
+  }
+
+  const token = getAccessToken();
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  return headers;
+}
 
 export interface WaitlistEntry {
   email: string;
@@ -62,6 +82,7 @@ export async function getWaitlistEntries(filter: WaitlistFilter = {}) {
     if (filter.offset) params.append('offset', String(filter.offset));
 
     const response = await fetch(`${API_URL}/waitlist?${params}`, {
+      headers: getAuthHeaders(''),
       credentials: 'include',
     });
 
@@ -84,6 +105,7 @@ export async function getWaitlistEntries(filter: WaitlistFilter = {}) {
 export async function getWaitlistEntry(id: string) {
   try {
     const response = await fetch(`${API_URL}/waitlist/${id}`, {
+      headers: getAuthHeaders(''),
       credentials: 'include',
     });
 
@@ -112,9 +134,7 @@ export async function updateWaitlistStatus(
   try {
     const response = await fetch(`${API_URL}/waitlist/${id}/status`, {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: getAuthHeaders(),
       credentials: 'include',
       body: JSON.stringify({ status }),
     });
@@ -144,9 +164,7 @@ export async function updateWaitlistNotes(
   try {
     const response = await fetch(`${API_URL}/waitlist/${id}/notes`, {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: getAuthHeaders(),
       credentials: 'include',
       body: JSON.stringify({ notes }),
     });
@@ -193,6 +211,7 @@ export async function confirmEmail(token: string) {
 export async function getWaitlistStats() {
   try {
     const response = await fetch(`${API_URL}/waitlist/stats/summary`, {
+      headers: getAuthHeaders(''),
       credentials: 'include',
     });
 
@@ -215,6 +234,7 @@ export async function getWaitlistStats() {
 export async function getWaitlistAuditLog(waitlistId: string) {
   try {
     const response = await fetch(`${API_URL}/waitlist/${waitlistId}/audit-log`, {
+      headers: getAuthHeaders(''),
       credentials: 'include',
     });
 
