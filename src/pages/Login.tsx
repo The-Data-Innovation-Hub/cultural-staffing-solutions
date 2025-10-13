@@ -36,6 +36,12 @@ const Login = () => {
     }
   };
 
+  const fillDemoCredentials = (demoEmail: string) => {
+    setEmail(demoEmail);
+    setPassword("password123");
+    setError("");
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-css-white via-background to-css-grey-light flex items-center justify-center p-6">
       <div className="w-full max-w-md">
@@ -58,11 +64,35 @@ const Login = () => {
 
         {/* Demo Credentials Info */}
         <div className="bg-white/80 backdrop-blur-sm rounded-lg p-4 mb-6 border border-css-gold/20">
-          <h3 className="font-montserrat font-semibold text-sm mb-2 text-css-black">Demo Credentials:</h3>
-          <div className="space-y-1 text-xs text-css-grey-dark font-lato">
-            <p><span className="font-semibold">Employee:</span> employee@culturalstaffing.com / password123</p>
-            <p><span className="font-semibold">Manager:</span> manager@culturalstaffing.com / password123</p>
-            <p><span className="font-semibold">Admin:</span> admin@culturalstaffing.com / password123</p>
+          <h3 className="font-montserrat font-semibold text-sm mb-2 text-css-black">Demo Credentials (click to use):</h3>
+          <div className="space-y-2 text-xs font-lato">
+            <button
+              type="button"
+              onClick={() => fillDemoCredentials("employee@culturalstaffing.com")}
+              className="w-full text-left px-3 py-2 rounded hover:bg-css-gold/10 transition-colors border border-transparent hover:border-css-gold/30"
+              disabled={isLoading}
+            >
+              <span className="font-semibold text-css-black">Employee:</span>{" "}
+              <span className="text-css-grey-dark">employee@culturalstaffing.com / password123</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => fillDemoCredentials("manager@culturalstaffing.com")}
+              className="w-full text-left px-3 py-2 rounded hover:bg-css-gold/10 transition-colors border border-transparent hover:border-css-gold/30"
+              disabled={isLoading}
+            >
+              <span className="font-semibold text-css-black">Manager:</span>{" "}
+              <span className="text-css-grey-dark">manager@culturalstaffing.com / password123</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => fillDemoCredentials("admin@culturalstaffing.com")}
+              className="w-full text-left px-3 py-2 rounded hover:bg-css-gold/10 transition-colors border border-transparent hover:border-css-gold/30"
+              disabled={isLoading}
+            >
+              <span className="font-semibold text-css-black">Admin:</span>{" "}
+              <span className="text-css-grey-dark">admin@culturalstaffing.com / password123</span>
+            </button>
           </div>
         </div>
 
