@@ -63,7 +63,7 @@ export function requireRole(role: 'employee' | 'manager' | 'admin') {
     }
 
     // Manager can access manager and employee routes
-    if (role === 'manager' && (req.user.role === 'manager' || req.user.role === 'admin')) {
+    if (role === 'manager' && req.user.role === 'manager') {
       return next();
     }
 
