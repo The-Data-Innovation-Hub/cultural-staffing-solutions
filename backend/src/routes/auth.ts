@@ -47,15 +47,19 @@ router.post('/login', async (req, res) => {
     // Set session
     req.session.userId = user.id;
 
+    console.log(`🔐 Login attempt for user ${user.id}, session ID: ${req.sessionID}`);
+
     // Explicitly save session to ensure cookie is set
     req.session.save((err) => {
       if (err) {
-        console.error('Error saving session:', err);
+        console.error('❌ Error saving session:', err);
         return res.status(500).json({
           message: 'Failed to create session',
           code: 'SESSION_ERROR'
         });
       }
+
+      console.log(`✅ Session saved successfully for user ${user.id}`);
 
       // Return user data (excluding password)
       res.json({

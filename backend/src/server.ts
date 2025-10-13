@@ -87,8 +87,18 @@ const PgSession = connectPgSimple(session);
 const sessionStore = new PgSession({
   pool: db,
   tableName: 'session', // Table will be auto-created
-  createTableIfMissing: true
+  createTableIfMissing: true,
+  errorLog: (error) => {
+    console.error('❌ Session store error:', error);
+  }
 });
+
+// Log session store events
+sessionStore.on('error', (error) => {
+  console.error('❌ Session store error event:', error);
+});
+
+console.log('✅ PostgreSQL session store initialized');
 
 // Session middleware
 app.use(session({
