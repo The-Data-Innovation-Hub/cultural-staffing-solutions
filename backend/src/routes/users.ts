@@ -47,7 +47,7 @@ const upload = multer({
 // PATCH /api/users/profile - Update user profile
 router.patch('/profile', requireAuth, async (req, res) => {
   try {
-    const { firstName, lastName, department, location } = req.body;
+    const { firstName, lastName } = req.body;
     const userId = req.user?.userId;
 
     if (!userId) {
@@ -72,16 +72,6 @@ router.patch('/profile', requireAuth, async (req, res) => {
       values.push(lastName);
     }
 
-    if (department !== undefined) {
-      updates.push(`department = $${paramIndex++}`);
-      values.push(department);
-    }
-
-    if (location !== undefined) {
-      updates.push(`location = $${paramIndex++}`);
-      values.push(location);
-    }
-
     if (updates.length === 0) {
       return res.status(400).json({
         message: 'No fields to update',
@@ -96,7 +86,7 @@ router.patch('/profile', requireAuth, async (req, res) => {
       UPDATE users
       SET ${updates.join(', ')}
       WHERE id = $${paramIndex}
-      RETURNING id, email, first_name, last_name, role, profile_image, department, location, created_at
+      RETURNING id, email, first_name, last_name, role, profile_image, created_at
     `;
 
     const result = await db.query(query, values);
@@ -117,8 +107,6 @@ router.patch('/profile', requireAuth, async (req, res) => {
       lastName: user.last_name,
       role: user.role,
       profileImage: user.profile_image,
-      department: user.department,
-      location: user.location,
       createdAt: user.created_at
     });
 
@@ -169,7 +157,7 @@ router.post('/profile-image', requireAuth, upload.single('profileImage'), async 
       UPDATE users
       SET profile_image = $1, updated_at = NOW()
       WHERE id = $2
-      RETURNING id, email, first_name, last_name, role, profile_image, department, location, created_at
+      RETURNING id, email, first_name, last_name, role, profile_image, created_at
     `;
 
     const result = await db.query(query, [imageUrl, userId]);
@@ -190,8 +178,6 @@ router.post('/profile-image', requireAuth, upload.single('profileImage'), async 
       lastName: user.last_name,
       role: user.role,
       profileImage: user.profile_image,
-      department: user.department,
-      location: user.location,
       createdAt: user.created_at
     });
 
