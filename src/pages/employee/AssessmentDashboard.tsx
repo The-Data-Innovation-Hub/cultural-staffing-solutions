@@ -328,13 +328,24 @@ const AssessmentDashboard: React.FC = () => {
     isLoading,
     hasError
   });
+
+  // Debug enrolled courses
+  if (enrolledCourses.length > 0) {
+    console.log('Enrolled Courses:', enrolledCourses.map(c => ({
+      id: c.id,
+      title: c.title || c.courseTitle,
+      courseTitle: c.courseTitle,
+      hasTitle: !!(c.title || c.courseTitle),
+      progressPercentage: c.progressPercentage
+    })));
+  }
   const totalProgress = apiLearningPath ? apiTotalProgress : (
     enrolledCourses.length > 0
-      ? Math.round(enrolledCourses.reduce((sum, c) => sum + c.progressPercentage, 0) / enrolledCourses.length)
+      ? Math.round(enrolledCourses.reduce((sum, c) => sum + (c.progressPercentage || 0), 0) / enrolledCourses.length)
       : 0
   );
-  const daysElapsed = apiLearningPath ? apiDaysElapsed : Math.floor((Date.now() - new Date(learningPath.startedAt!).getTime()) / (1000 * 60 * 60 * 24));
-  const daysRemaining = apiLearningPath ? apiDaysRemaining : ((learningPath.estimatedCompletionWeeks * 7) - daysElapsed);
+  const daysElapsed = apiLearningPath ? apiDaysElapsed : Math.floor((Date.now() - new Date((learningPath as any).startedAt || learningPath.createdAt).getTime()) / (1000 * 60 * 60 * 24));
+  const daysRemaining = apiLearningPath ? apiDaysRemaining : (((learningPath as any).estimatedCompletionWeeks || learningPath.estimatedCompletionTime || 12) * 7 - daysElapsed);
 
   useEffect(() => {
     document.title = 'My Learning Dashboard | Cultural Staffing Solutions';
