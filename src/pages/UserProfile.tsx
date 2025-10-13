@@ -68,6 +68,21 @@ const UserProfile = () => {
     .toUpperCase()
     .slice(0, 2);
 
+  // Add cache-buster to image URL when it changes
+  const imageUrlWithCacheBuster = React.useMemo(() => {
+    if (!userData.imageUrl) return undefined;
+    return `${userData.imageUrl}?v=${Date.now()}`;
+  }, [userData.imageUrl]);
+
+  // Log when user profile image changes
+  React.useEffect(() => {
+    console.log('🖼️ UserProfile image URL updated:', {
+      profileImage: user.profileImage,
+      imageUrl: userData.imageUrl,
+      withCacheBuster: imageUrlWithCacheBuster
+    });
+  }, [user.profileImage, userData.imageUrl, imageUrlWithCacheBuster]);
+
   const handleSignOut = async () => {
     await signOut();
     navigate('/login');
@@ -340,7 +355,7 @@ const UserProfile = () => {
                 <div className="relative">
                   <Avatar className="h-16 w-16">
                     <AvatarImage
-                      src={imagePreview || userData.imageUrl}
+                      src={imagePreview || imageUrlWithCacheBuster}
                       alt={userData.name}
                     />
                     <AvatarFallback className="bg-primary text-primary-foreground font-bold text-lg">

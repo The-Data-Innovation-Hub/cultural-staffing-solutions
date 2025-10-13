@@ -1,3 +1,4 @@
+import React from "react";
 import { useLocation, NavLink, useNavigate } from "react-router-dom";
 import {
   BookOpen,
@@ -112,6 +113,21 @@ export function AppSidebar() {
     imageUrl: user?.profileImage,
   };
 
+  // Log when profileImage changes
+  React.useEffect(() => {
+    console.log('👤 AppSidebar user data updated:', {
+      profileImage: user?.profileImage,
+      fullUser: user
+    });
+  }, [user?.profileImage, user]);
+
+  // Add cache-buster to image URL when it changes
+  const imageUrlWithCacheBuster = React.useMemo(() => {
+    if (!userData.imageUrl) return undefined;
+    // Add timestamp to force reload when URL changes
+    return `${userData.imageUrl}?v=${Date.now()}`;
+  }, [userData.imageUrl]);
+
   const initials = userData.name
     .split(' ')
     .map((n: string) => n[0])
@@ -139,7 +155,10 @@ export function AppSidebar() {
       <SidebarHeader className="border-b border-border">
         <div className="flex items-center gap-3 p-4">
           <Avatar className="h-10 w-10">
-            <AvatarImage src={userData.imageUrl} alt={userData.name} />
+            <AvatarImage
+              src={imageUrlWithCacheBuster}
+              alt={userData.name}
+            />
             <AvatarFallback className="bg-gradient-gold text-css-black font-bold">
               {initials}
             </AvatarFallback>
