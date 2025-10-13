@@ -356,6 +356,19 @@ const AssessmentDashboard: React.FC = () => {
     title: c.title || c.courseTitle
   })));
 
+  console.log('Filtering details:', {
+    coursesLength: courses.length,
+    coursesSource: apiCourses.length > 0 ? 'API' : 'Mock',
+    apiCoursesLength: apiCourses.length,
+    mockCoursesLength: mockRecommendedCourses.length,
+    apiLearningPath: !!apiLearningPath,
+    hasError,
+    mockCourse1IsEnrolled: mockRecommendedCourses[0]?.isEnrolled,
+    mockCourse2IsEnrolled: mockRecommendedCourses[1]?.isEnrolled,
+    course1IsEnrolled: courses[0]?.isEnrolled,
+    course2IsEnrolled: courses[1]?.isEnrolled,
+  });
+
   if (enrolledCourses.length > 0) {
     console.log('Enrolled Courses:', enrolledCourses.map(c => ({
       id: c.id,
