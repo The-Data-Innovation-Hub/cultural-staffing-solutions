@@ -236,6 +236,7 @@ export interface RecommendedCourse {
   priorityOrder: number;
   isRequired: boolean;
   prerequisiteIds?: string[];
+  thumbnailUrl?: string; // Video thumbnail image URL
 
   // Enrollment and progress tracking
   isEnrolled?: boolean;

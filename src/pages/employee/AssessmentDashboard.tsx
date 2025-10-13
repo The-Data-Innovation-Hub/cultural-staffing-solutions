@@ -147,6 +147,7 @@ const mockRecommendedCourses: RecommendedCourse[] = [
     isCompleted: false,
     progressPercentage: 35,
     enrolledAt: '2025-01-15T10:00:00Z',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=250&fit=crop',
   },
   {
     id: 'course-002',
@@ -165,6 +166,7 @@ const mockRecommendedCourses: RecommendedCourse[] = [
     isEnrolled: true,
     isCompleted: false,
     progressPercentage: 0,
+    thumbnailUrl: 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=400&h=250&fit=crop',
   },
   {
     id: 'course-003',
@@ -183,6 +185,7 @@ const mockRecommendedCourses: RecommendedCourse[] = [
     isEnrolled: false,
     isCompleted: false,
     progressPercentage: 0,
+    thumbnailUrl: 'https://images.unsplash.com/photo-1551190822-a9333d879b1f?w=400&h=250&fit=crop',
   },
   {
     id: 'course-004',
@@ -201,6 +204,7 @@ const mockRecommendedCourses: RecommendedCourse[] = [
     isEnrolled: false,
     isCompleted: false,
     progressPercentage: 0,
+    thumbnailUrl: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=400&h=250&fit=crop',
   },
   {
     id: 'course-005',
@@ -219,6 +223,7 @@ const mockRecommendedCourses: RecommendedCourse[] = [
     isEnrolled: false,
     isCompleted: false,
     progressPercentage: 0,
+    thumbnailUrl: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=250&fit=crop',
   },
   {
     id: 'course-006',
@@ -237,6 +242,7 @@ const mockRecommendedCourses: RecommendedCourse[] = [
     isEnrolled: false,
     isCompleted: false,
     progressPercentage: 0,
+    thumbnailUrl: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=400&h=250&fit=crop',
   },
 ];
 
@@ -589,7 +595,16 @@ const AssessmentDashboard: React.FC = () => {
                   <div className="flex gap-4 mb-3">
                     {/* Video Thumbnail */}
                     <div className="relative flex-shrink-0 w-32 h-20 bg-css-grey-light rounded-lg overflow-hidden group-hover:shadow-lg transition-shadow">
-                      <div className="absolute inset-0 bg-gradient-to-br from-css-gold/20 to-transparent" />
+                      {course.thumbnailUrl ? (
+                        <img
+                          src={course.thumbnailUrl}
+                          alt={course.title || course.courseTitle}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="absolute inset-0 bg-gradient-to-br from-css-gold/20 to-css-grey-light" />
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-br from-transparent to-black/20" />
                       <div className="absolute inset-0 flex items-center justify-center">
                         <div className="w-12 h-12 rounded-full bg-white/90 shadow-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                           <Play className="w-6 h-6 text-css-gold ml-1" />
@@ -740,7 +755,16 @@ const AssessmentDashboard: React.FC = () => {
                 >
                   {/* Video Thumbnail */}
                   <div className="relative w-full h-32 bg-css-grey-light overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-br from-css-gold/20 to-transparent" />
+                    {course.thumbnailUrl ? (
+                      <img
+                        src={course.thumbnailUrl}
+                        alt={course.title || course.courseTitle}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-gradient-to-br from-css-gold/20 to-css-grey-light" />
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-br from-transparent to-black/20" />
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className="w-14 h-14 rounded-full bg-white/90 shadow-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                         <Play className="w-7 h-7 text-css-gold ml-1" />
