@@ -1,5 +1,6 @@
 // Authentication API configuration
 // VITE_API_URL should include /api, e.g., https://css-clinify.onrender.com/api
+// Updated: 2025-10-13 - Fixed environment variable injection
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 export interface User {
