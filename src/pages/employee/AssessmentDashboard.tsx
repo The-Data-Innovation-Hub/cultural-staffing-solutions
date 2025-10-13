@@ -330,14 +330,23 @@ const AssessmentDashboard: React.FC = () => {
   });
 
   // Debug enrolled courses
+  console.log('Courses array:', courses.map(c => ({
+    id: c.id,
+    isEnrolled: c.isEnrolled,
+    title: c.title || c.courseTitle
+  })));
+
   if (enrolledCourses.length > 0) {
     console.log('Enrolled Courses:', enrolledCourses.map(c => ({
       id: c.id,
       title: c.title || c.courseTitle,
       courseTitle: c.courseTitle,
       hasTitle: !!(c.title || c.courseTitle),
-      progressPercentage: c.progressPercentage
+      progressPercentage: c.progressPercentage,
+      isEnrolled: c.isEnrolled
     })));
+  } else {
+    console.log('No enrolled courses - filtering from:', courses.length, 'courses');
   }
   const totalProgress = apiLearningPath ? apiTotalProgress : (
     enrolledCourses.length > 0
