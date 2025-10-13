@@ -2,6 +2,7 @@ import express from 'express';
 import crypto from 'crypto';
 import { db } from '../server';
 import { requireAuth } from '../middleware/auth';
+import { convertKeysToCamelCase } from '../utils/caseConverter';
 
 const router = express.Router();
 
@@ -87,7 +88,7 @@ router.post('/', async (req, res) => {
       ipAddress
     ]);
 
-    res.status(201).json({ success: true, data: result.rows[0] });
+    res.status(201).json({ success: true, data: convertKeysToCamelCase(result.rows[0]) });
   } catch (error: any) {
     // Check for duplicate email
     if (error.code === '23505') {
@@ -174,7 +175,7 @@ router.get('/', requireAuth, async (req, res) => {
     }
 
     const result = await db.query(query, params);
-    res.json({ success: true, data: result.rows });
+    res.json({ success: true, data: convertKeysToCamelCase(result.rows) });
   } catch (error) {
     console.error('Error fetching waitlist entries:', error);
     res.status(500).json({ success: false, error: 'Failed to fetch waitlist entries' });
@@ -209,7 +210,7 @@ router.get('/:id', requireAuth, async (req, res) => {
       return res.status(404).json({ success: false, error: 'Entry not found' });
     }
 
-    res.json({ success: true, data: result.rows[0] });
+    res.json({ success: true, data: convertKeysToCamelCase(result.rows[0]) });
   } catch (error) {
     console.error('Error fetching waitlist entry:', error);
     res.status(500).json({ success: false, error: 'Failed to fetch waitlist entry' });
@@ -276,7 +277,7 @@ router.patch('/:id/status', requireAuth, async (req, res) => {
       [id, adminUserId, 'status_change', previousStatus, status, ipAddress]
     );
 
-    res.json({ success: true, data: result.rows[0] });
+    res.json({ success: true, data: convertKeysToCamelCase(result.rows[0]) });
   } catch (error) {
     console.error('Error updating waitlist status:', error);
     res.status(500).json({ success: false, error: 'Failed to update status' });
@@ -342,7 +343,7 @@ router.patch('/:id/notes', requireAuth, async (req, res) => {
       [id, adminUserId, 'note_added', previousNotes || '', notes, ipAddress]
     );
 
-    res.json({ success: true, data: result.rows[0] });
+    res.json({ success: true, data: convertKeysToCamelCase(result.rows[0]) });
   } catch (error) {
     console.error('Error updating waitlist notes:', error);
     res.status(500).json({ success: false, error: 'Failed to update notes' });
@@ -384,7 +385,7 @@ router.post('/confirm/:token', async (req, res) => {
       return res.status(404).json({ success: false, error: 'Invalid confirmation token' });
     }
 
-    res.json({ success: true, data: result.rows[0] });
+    res.json({ success: true, data: convertKeysToCamelCase(result.rows[0]) });
   } catch (error) {
     console.error('Error confirming email:', error);
     res.status(500).json({ success: false, error: 'Failed to confirm email' });
@@ -455,7 +456,7 @@ router.get('/:id/audit-log', requireAuth, async (req, res) => {
       [id]
     );
 
-    res.json({ success: true, data: result.rows });
+    res.json({ success: true, data: convertKeysToCamelCase(result.rows) });
   } catch (error) {
     console.error('Error fetching audit log:', error);
     res.status(500).json({ success: false, error: 'Failed to fetch audit log' });
