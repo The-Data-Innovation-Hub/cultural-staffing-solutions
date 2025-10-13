@@ -70,9 +70,9 @@ router.post('/', async (req, res) => {
 
     const query = `
       INSERT INTO waitlist (
-        email, "firstName", "lastName", phone, profession, "yearsOfExperience",
-        "interestedServices", message, "referralSource", "confirmationToken",
-        status, "confirmedEmail", "ipAddress"
+        email, first_name, last_name, phone, profession, years_of_experience,
+        interested_services, message, referral_source, confirmation_token,
+        status, confirmed_email, ip_address
       )
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
       RETURNING *
@@ -155,18 +155,18 @@ router.get('/', requireAuth, async (req, res) => {
     }
 
     if (confirmedEmail !== undefined) {
-      query += ` AND "confirmedEmail" = $${paramIndex}`;
+      query += ` AND confirmed_email = $${paramIndex}`;
       params.push(confirmedEmail === 'true');
       paramIndex++;
     }
 
     if (searchTerm) {
-      query += ` AND (email ILIKE $${paramIndex} OR "firstName" ILIKE $${paramIndex} OR "lastName" ILIKE $${paramIndex})`;
+      query += ` AND (email ILIKE $${paramIndex} OR first_name ILIKE $${paramIndex} OR last_name ILIKE $${paramIndex})`;
       params.push(`%${searchTerm}%`);
       paramIndex++;
     }
 
-    query += ' ORDER BY "signupDate" DESC';
+    query += ' ORDER BY signup_date DESC';
 
     if (limit) {
       query += ` LIMIT $${paramIndex}`;
@@ -270,7 +270,7 @@ router.patch('/:id/status', requireAuth, async (req, res) => {
     // Update status
     const updateQuery = `
       UPDATE waitlist
-      SET status = $1, "contactedAt" = $2, "updatedAt" = NOW()
+      SET status = $1, contacted_at = $2, updated_at = NOW()
       WHERE id = $3
       RETURNING *
     `;
@@ -278,7 +278,7 @@ router.patch('/:id/status', requireAuth, async (req, res) => {
 
     // Log the change
     await db.query(
-      `INSERT INTO waitlist_audit_log ("waitlistId", "adminUserId", action, "previousValue", "newValue", "ipAddress")
+      `INSERT INTO waitlist_audit_log (waitlist_id, admin_user_id, action, previous_value, new_value, ip_address)
        VALUES ($1, $2, $3, $4, $5, $6)`,
       [id, adminUserId, 'status_change', previousStatus, status, ipAddress]
     );
@@ -336,7 +336,7 @@ router.patch('/:id/notes', requireAuth, async (req, res) => {
     // Update notes
     const updateQuery = `
       UPDATE waitlist
-      SET notes = $1, "updatedAt" = NOW()
+      SET notes = $1, updated_at = NOW()
       WHERE id = $2
       RETURNING *
     `;
@@ -344,7 +344,7 @@ router.patch('/:id/notes', requireAuth, async (req, res) => {
 
     // Log the change
     await db.query(
-      `INSERT INTO waitlist_audit_log ("waitlistId", "adminUserId", action, "previousValue", "newValue", "ipAddress")
+      `INSERT INTO waitlist_audit_log (waitlist_id, admin_user_id, action, previous_value, new_value, ip_address)
        VALUES ($1, $2, $3, $4, $5, $6)`,
       [id, adminUserId, 'note_added', previousNotes || '', notes, ipAddress]
     );
@@ -381,8 +381,8 @@ router.post('/confirm/:token', async (req, res) => {
 
     const updateQuery = `
       UPDATE waitlist
-      SET "confirmedEmail" = true, "updatedAt" = NOW()
-      WHERE "confirmationToken" = $1
+      SET confirmed_email = true, updated_at = NOW()
+      WHERE confirmation_token = $1
       RETURNING *
     `;
     const result = await db.query(updateQuery, [token]);
@@ -414,7 +414,7 @@ router.get('/stats/summary', requireAuth, async (req, res) => {
     const statsQuery = `
       SELECT
         COUNT(*) as total,
-        COUNT(*) FILTER (WHERE "confirmedEmail" = true) as confirmed,
+        COUNT(*) FILTER (WHERE confirmed_email = true) as confirmed,
         COUNT(*) FILTER (WHERE status = 'contacted') as contacted,
         COUNT(*) FILTER (WHERE status = 'registered') as registered
       FROM waitlist
@@ -458,7 +458,7 @@ router.get('/:id/audit-log', requireAuth, async (req, res) => {
     const { id } = req.params;
 
     const result = await db.query(
-      'SELECT * FROM waitlist_audit_log WHERE "waitlistId" = $1 ORDER BY timestamp DESC',
+      'SELECT * FROM waitlist_audit_log WHERE waitlist_id = $1 ORDER BY timestamp DESC',
       [id]
     );
 
