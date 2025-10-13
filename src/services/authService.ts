@@ -10,8 +10,8 @@ export interface User {
   lastName: string;
   role: 'employee' | 'manager' | 'admin';
   profileImage?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface LoginCredentials {
