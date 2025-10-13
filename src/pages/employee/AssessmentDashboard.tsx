@@ -310,11 +310,12 @@ const AssessmentDashboard: React.FC = () => {
     : generatedData?.milestones || mockMilestones;
 
   // Use real calculated values or calculate from fallback data
-  // If API returned data, use it; otherwise filter from courses (which includes mock data)
-  const enrolledCourses = apiLearningPath && apiEnrolledCourses.length > 0
+  // Only use API enrolled/completed courses if we have a valid learning path
+  // Otherwise, always filter from the courses array (which includes mock data)
+  const enrolledCourses = apiLearningPath
     ? apiEnrolledCourses
     : courses.filter(c => c.isEnrolled);
-  const completedCourses = apiLearningPath && apiCompletedCourses.length > 0
+  const completedCourses = apiLearningPath
     ? apiCompletedCourses
     : courses.filter(c => c.isCompleted);
 
