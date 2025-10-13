@@ -1,4 +1,5 @@
 import express from 'express';
+import crypto from 'crypto';
 import { db } from '../server';
 
 const router = express.Router();
@@ -63,9 +64,7 @@ router.post('/', async (req, res) => {
     }
 
     // Generate confirmation token
-    const confirmationToken = Array.from(crypto.getRandomValues(new Uint8Array(32)))
-      .map(byte => byte.toString(16).padStart(2, '0'))
-      .join('');
+    const confirmationToken = crypto.randomBytes(32).toString('hex');
 
     const ipAddress = req.ip || req.socket.remoteAddress;
 
