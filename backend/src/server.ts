@@ -24,6 +24,7 @@ import learningPathRoutes from './routes/learningPaths';
 import courseRoutes from './routes/courses';
 import milestoneRoutes from './routes/milestones';
 import analyticsRoutes from './routes/analytics';
+import waitlistRoutes from './routes/waitlist';
 
 // Initialize Express app
 const app = express();
@@ -113,6 +114,7 @@ app.use('/api/learning-paths', learningPathRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/milestones', milestoneRoutes);
 app.use('/api/analytics', analyticsRoutes);
+app.use('/api/waitlist', waitlistRoutes);
 
 // Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
