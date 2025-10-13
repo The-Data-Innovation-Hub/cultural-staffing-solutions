@@ -1,4 +1,4 @@
-import { Outlet, Routes, Route, useLocation, Link } from "react-router-dom";
+import { Routes, Route, useLocation, Link } from "react-router-dom";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,6 @@ import ManagerDashboard from "../pages/ManagerDashboard";
 import AdminDashboard from "../pages/AdminDashboard";
 import TrainingCenter from "../pages/TrainingCenter";
 import CourseView from "../pages/CourseView";
-import AssessmentCenter from "../pages/AssessmentCenter";
 import UserProfile from "../pages/UserProfile";
 import AIGuru from "../pages/employee/AIGuru";
 import Certificates from "../pages/employee/Certificates";
@@ -72,7 +71,6 @@ const Layout = () => {
                 <Route index element={<EmployeeDashboard />} />
                 <Route path="training" element={<TrainingCenter />} />
                 <Route path="training/course/:id" element={<CourseView />} />
-                <Route path="assessments" element={<AssessmentCenter />} />
                 <Route path="onboarding" element={<OnboardingAssessment />} />
                 <Route path="learning-path" element={<AssessmentDashboard />} />
                 <Route path="profile" element={<UserProfile />} />

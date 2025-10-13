@@ -9,12 +9,6 @@ import Login from "./pages/Login";
 import LandingPage from "./pages/LandingPage";
 import EmailConfirmation from "./pages/EmailConfirmation";
 import ProtectedRoute from "./components/ProtectedRoute";
-import EmployeeDashboard from "./pages/EmployeeDashboard";
-import ManagerDashboard from "./pages/ManagerDashboard";
-import AdminDashboard from "./pages/AdminDashboard";
-import TrainingCenter from "./pages/TrainingCenter";
-import CourseView from "./pages/CourseView";
-import AssessmentCenter from "./pages/AssessmentCenter";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,10 +24,6 @@ const App = () => (
           <Route path="/login/*" element={<Login />} />
           <Route path="/confirm-email" element={<EmailConfirmation />} />
 
-          {/* Direct Access Routes */}
-          <Route path="/assessment" element={<AssessmentCenter />} />
-          <Route path="/assessments" element={<AssessmentCenter />} />
-          
           {/* Employee Routes */}
           <Route path="/employee/*" element={
             <ProtectedRoute>

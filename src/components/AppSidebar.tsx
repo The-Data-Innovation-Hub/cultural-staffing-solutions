@@ -1,7 +1,6 @@
 import { useLocation, NavLink, useNavigate } from "react-router-dom";
 import {
   BookOpen,
-  GraduationCap,
   Users,
   BarChart3,
   Settings,
@@ -53,7 +52,6 @@ const employeeNavItems = [
   { title: "Onboarding Assessment", url: "/employee/onboarding", icon: Sparkles },
   { title: "My Learning Path", url: "/employee/learning-path", icon: TrendingUp },
   { title: "Training Center", url: "/employee/training", icon: BookOpen },
-  { title: "Assessments", url: "/employee/assessments", icon: GraduationCap },
   { title: "Clinify AI", url: "/employee/ai-guru", icon: ClinifyAIIcon },
   { title: "Medical Abbreviations", url: "/employee/abbreviations", icon: BookMarked },
   { title: "Certificates", url: "/employee/certificates", icon: Award },
