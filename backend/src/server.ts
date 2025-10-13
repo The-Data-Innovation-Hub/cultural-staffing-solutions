@@ -30,6 +30,10 @@ import waitlistRoutes from './routes/waitlist';
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// When running behind a reverse proxy (Render, Vercel, etc.), trust the proxy
+// so that secure cookies and protocol detection work correctly.
+app.set('trust proxy', 1);
+
 // Database connection pool
 export const db = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -82,6 +86,8 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'your-secret-key',
   resave: false,
   saveUninitialized: false,
+  // Required when behind a proxy to correctly set secure cookies using X-Forwarded-Proto
+  proxy: true,
   cookie: {
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
