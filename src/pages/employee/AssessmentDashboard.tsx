@@ -310,8 +310,13 @@ const AssessmentDashboard: React.FC = () => {
     : generatedData?.milestones || mockMilestones;
 
   // Use real calculated values or calculate from fallback data
-  const enrolledCourses = apiEnrolledCourses.length > 0 ? apiEnrolledCourses : courses.filter(c => c.isEnrolled);
-  const completedCourses = apiCompletedCourses.length > 0 ? apiCompletedCourses : courses.filter(c => c.isCompleted);
+  // If API returned data, use it; otherwise filter from courses (which includes mock data)
+  const enrolledCourses = apiLearningPath && apiEnrolledCourses.length > 0
+    ? apiEnrolledCourses
+    : courses.filter(c => c.isEnrolled);
+  const completedCourses = apiLearningPath && apiCompletedCourses.length > 0
+    ? apiCompletedCourses
+    : courses.filter(c => c.isCompleted);
 
   // Debug logging
   console.log('Dashboard Debug:', {
