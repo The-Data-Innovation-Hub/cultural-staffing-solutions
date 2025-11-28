@@ -253,7 +253,7 @@ app.post('/api/emails/waitlist-welcome', async (req, res) => {
 
         <div style="text-align: center; padding: 20px; color: #999; font-size: 12px;">
           <p>Cultural Staffing Solutions<br>
-          Northern Ireland's Premier Healthcare Staffing Solution</p>
+          UK's Premier Cultural Healthcare Solutions</p>
           <p>&copy; ${new Date().getFullYear()} Cultural Staffing Solutions. All rights reserved.</p>
         </div>
       </body>
@@ -369,7 +369,7 @@ app.post('/api/emails/welcome', async (req, res) => {
 
         <div style="text-align: center; padding: 20px; color: #999; font-size: 12px;">
           <p>Cultural Staffing Solutions<br>
-          Northern Ireland's Premier Healthcare Staffing Solution</p>
+          UK's Premier Cultural Healthcare Solutions</p>
           <p>&copy; ${new Date().getFullYear()} Cultural Staffing Solutions. All rights reserved.</p>
         </div>
       </body>

@@ -49,6 +49,18 @@ export const IMAGES = {
     recruitment: isBunnyConfigured()
       ? `${BunnyConfig.cdnUrl}/images/services/recruitment.jpg`
       : '/images/services/recruitment.jpg',
+
+    csmart: isBunnyConfigured()
+      ? `${BunnyConfig.cdnUrl}/images/services/csmart.jpg`
+      : '/images/services/csmart.jpg',
+
+    clinifyAi: isBunnyConfigured()
+      ? `${BunnyConfig.cdnUrl}/images/services/clinify-ai.jpg`
+      : '/images/services/clinify-ai.jpg',
+
+    elearning: isBunnyConfigured()
+      ? `${BunnyConfig.cdnUrl}/images/services/elearning.jpg`
+      : '/images/services/elearning.jpg',
   },
 
   // Testimonials
@@ -79,6 +91,13 @@ export const IMAGES = {
     certificate: isBunnyConfigured()
       ? `${BunnyConfig.cdnUrl}/images/placeholders/certificate.jpg`
       : '/placeholder-certificate.jpg',
+  },
+
+  // Logos
+  logos: {
+    csmart: '/images/logos/csmart-logo.svg',
+    clinifyAi: '/images/logos/clinify-ai-logo.svg',
+    culturalStaffing: '/cultural-staffing-logo.png',
   },
 };
 

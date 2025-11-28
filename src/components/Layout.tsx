@@ -13,6 +13,8 @@ import AIGuru from "../pages/employee/AIGuru";
 import Certificates from "../pages/employee/Certificates";
 import OnboardingAssessment from "../pages/employee/OnboardingAssessment";
 import AssessmentDashboard from "../pages/employee/AssessmentDashboard";
+import CulturalJourneyMap from "../pages/employee/CulturalJourneyMap";
+import ComingSoon from "../pages/employee/ComingSoon";
 import WaitlistManagement from "../pages/admin/WaitlistManagement";
 import ContentManagement from "../pages/admin/ContentManagement";
 import UserManagement from "../pages/admin/UserManagement";
@@ -76,6 +78,8 @@ const Layout = () => {
                 <Route path="profile" element={<UserProfile />} />
                 <Route path="ai-guru" element={<AIGuru />} />
                 <Route path="certificates" element={<Certificates />} />
+                <Route path="cultural-journey" element={<CulturalJourneyMap />} />
+                <Route path="coming-soon" element={<ComingSoon />} />
                 <Route path="abbreviations" element={<MedicalAbbreviationsV2 />} />
               </>
             )}

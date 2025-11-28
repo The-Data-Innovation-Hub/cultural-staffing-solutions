@@ -48,7 +48,7 @@ export default function EmailConfirmation() {
             setMessage(
               "This confirmation link is invalid or has already been used. " +
               "If you've already confirmed your email, you're all set! " +
-              "Otherwise, please try joining the waitlist again."
+              "Otherwise, please try joining the waiting list again."
             );
           } else {
             setMessage(errorMsg || "Failed to confirm email. Please try again or contact support.");
@@ -108,7 +108,7 @@ export default function EmailConfirmation() {
                 </p>
                 <div className="bg-css-gold-light p-4 rounded-lg mb-6">
                   <p className="text-sm text-foreground">
-                    You're now on our waitlist. We've sent a welcome email to{" "}
+                    You're now on our waiting list. We've sent a welcome email to{" "}
                     <strong>{userEmail}</strong> with more information about what's next.
                   </p>
                 </div>
@@ -136,7 +136,7 @@ export default function EmailConfirmation() {
                 <div className="bg-red-50 border border-red-200 p-4 rounded-lg mb-6">
                   <p className="text-sm text-red-700">
                     If you continue to experience issues, please contact our support team
-                    or try joining the waitlist again.
+                    or try joining the waiting list again.
                   </p>
                 </div>
                 <div className="space-y-3">

@@ -13,8 +13,8 @@ import { Pool } from 'pg';
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './config/swagger';
 
-// Load environment variables
-dotenv.config();
+// Load environment variables from parent directory (where main .env is located)
+dotenv.config({ path: '../.env' });
 
 // Import routes
 import authRoutes from './routes/auth';
@@ -35,11 +35,14 @@ const PORT = process.env.PORT || 3001;
 app.set('trust proxy', 1);
 
 // Database connection pool
+// Use SSL for cloud databases (Neon, Render, etc.), disable for local development
+const useSSL = process.env.DATABASE_URL?.includes('neon.tech') || 
+               process.env.DATABASE_URL?.includes('render.com') ||
+               process.env.NODE_ENV === 'production';
+
 export const db = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
+  ssl: useSSL ? { rejectUnauthorized: false } : false
 });
 
 // Test database connection

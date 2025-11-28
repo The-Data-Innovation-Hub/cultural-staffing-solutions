@@ -27,10 +27,12 @@ const professions = [
 ];
 
 const services = [
+  { id: "csmart", label: "C-Smart (AI Workforce Solution)" },
+  { id: "clinify", label: "Clinify-AI (Communication Companion)" },
   { id: "training", label: "Healthcare Professional Training" },
-  { id: "cultural", label: "Cultural Orientation Program" },
+  { id: "cultural", label: "Cultural Adaptive Onboarding" },
   { id: "recruitment", label: "Recruitment & Placement" },
-  { id: "certification", label: "Certification Programs" },
+  { id: "proficiency", label: "Cultural Humility & Proficiency" },
 ];
 
 const referralSources = [
@@ -129,11 +131,11 @@ export function WaitlistForm() {
         setSubmitted(true);
       } else {
         // Handle specific error cases
-        const errorMessage = result.error || "Failed to join waitlist. Please try again.";
+        const errorMessage = result.error || "Failed to join waiting list. Please try again.";
 
         if (errorMessage.includes('already exists') || errorMessage.includes('duplicate')) {
           setError(
-            "This email address is already on our waitlist. " +
+            "This email address is already on our waiting list. " +
             "If you haven't received a confirmation email, please check your spam folder or contact us for assistance."
           );
         } else {
@@ -206,12 +208,19 @@ export function WaitlistForm() {
 
   return (
     <Card className="w-full max-w-2xl mx-auto border-0 shadow-card">
-      <CardHeader>
-        <CardTitle className="font-montserrat text-2xl text-center">
-          Join Our Waitlist
+      <CardHeader className="text-center">
+        <div className="flex justify-center mb-4">
+          <img 
+            src="/images/logos/csmart-logo.svg" 
+            alt="C-Smart Logo" 
+            className="h-16 w-auto"
+          />
+        </div>
+        <CardTitle className="font-montserrat text-2xl">
+          Join Our Waiting List
         </CardTitle>
-        <CardDescription className="text-center">
-          Be the first to know about our training programs and opportunities in Northern Ireland healthcare
+        <CardDescription>
+          Be the first to know about our training programs and opportunities in Northern Ireland & UK healthcare
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -348,7 +357,7 @@ export function WaitlistForm() {
             <Label htmlFor="message">Message (Optional)</Label>
             <Textarea
               id="message"
-              placeholder="Tell us about your interest in healthcare opportunities in Northern Ireland..."
+              placeholder="Tell us about your interest in healthcare opportunities in Northern Ireland and the UK"
               rows={4}
               value={formData.message}
               onChange={(e) => setFormData({ ...formData, message: e.target.value })}
@@ -384,12 +393,12 @@ export function WaitlistForm() {
                 Submitting...
               </>
             ) : (
-              "Join Waitlist"
+              "Join Our Waiting List"
             )}
           </Button>
 
           <p className="text-xs text-center text-muted-foreground">
-            By joining our waitlist, you agree to receive communications about our programs and services.
+            By joining our waiting list, you agree to receive communications about our programs and services.
             You can unsubscribe at any time.
           </p>
         </form>

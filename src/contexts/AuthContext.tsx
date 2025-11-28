@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { login as dbLogin, logout as dbLogout, User, isAuthenticated } from '@/services/authService';
+import { getFullUser, getFullUserByEmail } from '@/lib/neonDataApi';
+import { stackClientApp } from '@/lib/stack';
 
 interface AuthContextType {
   isLoaded: boolean;
@@ -51,7 +53,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signOut = async () => {
     try {
-      // Call backend logout to clear JWT cookies and tokens
+      // Sign out from Neon Auth (Stack Auth)
+      await stackClientApp.signOut();
+      
+      // Also call legacy backend logout to clear JWT cookies
       await dbLogout();
     } catch (error) {
       console.error('Error during logout:', error);
@@ -60,7 +65,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(null);
       setIsSignedIn(false);
       localStorage.removeItem('authUser');
-      // JWT tokens are cleared by dbLogout()
     }
   };
 

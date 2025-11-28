@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 80" fill="none">
+  <!-- Top left dot -->
+  <circle cx="16" cy="10" r="7" fill="#D4A017"/>
+  
+  <!-- Main C shape -->
+  <path d="M8 18 L8 62 C8 70 14 76 22 76 L48 76 L48 56 L28 56 C24 56 22 54 22 50 L22 30 C22 26 24 24 28 24 L48 24 L48 4 L22 4 C14 4 8 10 8 18 Z" fill="#D4A017"/>
+  
+  <!-- Bottom left dot -->
+  <circle cx="16" cy="70" r="7" fill="#D4A017"/>
+  
+  <!-- Right bracket decoration (lighter) -->
+  <rect x="52" y="4" width="6" height="72" fill="#D4A017" opacity="0.25"/>
+  <rect x="52" y="4" width="20" height="6" fill="#D4A017" opacity="0.25"/>
+  <rect x="52" y="70" width="20" height="6" fill="#D4A017" opacity="0.25"/>
+  
+  <!-- Text: -Smart -->
+  <text x="78" y="54" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="bold" fill="#D4A017">-Smart</text>
+</svg>

@@ -785,7 +785,7 @@ const OnboardingAssessment: React.FC = () => {
       { id: 'clinical', name: 'Clinical Skills', skills: ['Patient Assessment', 'Medication Administration', 'Wound Care'] },
       { id: 'technical', name: 'Technical Skills', skills: ['EHR Systems', 'Medical Equipment', 'Documentation'] },
       { id: 'communication', name: 'Communication', skills: ['Patient Communication', 'Team Collaboration', 'Cultural Sensitivity'] },
-      { id: 'compliance', name: 'Compliance', skills: ['HIPAA/Privacy', 'Infection Control', 'Safety Protocols'] },
+      { id: 'compliance', name: 'Compliance', skills: ['GDPR & Data Protection', 'Infection Control', 'Safety Protocols'] },
     ];
 
     return (
@@ -1215,7 +1215,7 @@ const OnboardingAssessment: React.FC = () => {
             'Cultural Competency in Healthcare Settings',
             'US Healthcare Documentation Standards',
             'Patient Communication Best Practices',
-            'HIPAA Compliance & Privacy',
+            'GDPR & Data Protection',
             'Electronic Health Records (EHR) Proficiency',
           ].map((area, index) => (
             <div key={area} className="flex items-center space-x-3 p-3 bg-css-grey-light rounded-lg">

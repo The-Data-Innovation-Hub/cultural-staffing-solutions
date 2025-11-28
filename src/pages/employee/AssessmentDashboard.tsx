@@ -78,7 +78,7 @@ const mockPriorityAreas: PriorityArea[] = [
     id: 'priority-002',
     learningPathId: 'path-001',
     category: 'compliance',
-    title: 'HIPAA Compliance & Patient Privacy',
+    title: 'GDPR Compliance & Patient Privacy',
     description: 'Understanding US privacy laws, documentation requirements, and confidentiality standards',
     importance: 'critical',
     currentLevel: 60,
@@ -151,12 +151,12 @@ const mockRecommendedCourses: RecommendedCourse[] = [
   },
   {
     id: 'course-002',
-    title: 'HIPAA Fundamentals for Healthcare Workers',
+    title: 'GDPR & NHS Data Protection for Healthcare Workers',
     description: 'Essential privacy and security training for US healthcare professionals',
     category: 'Compliance',
     duration: 90,
     difficulty: 'beginner',
-    courseTitle: 'HIPAA Fundamentals for Healthcare Workers',
+    courseTitle: 'GDPR & NHS Data Protection for Healthcare Workers',
     courseDescription: 'Essential privacy and security training for US healthcare professionals',
     durationMinutes: 90,
     difficultyLevel: 'beginner',
@@ -256,7 +256,7 @@ const mockMilestones: Milestone[] = [
     targetDate: '2025-02-14',
     scheduledWeek: 4,
     associatedCourseIds: ['course-001', 'course-002', 'course-003'],
-    requiredActivities: ['Complete Cultural Competency Foundations', 'Pass HIPAA Certification', 'Attend Live Q&A Session'],
+    requiredActivities: ['Complete Cultural Competency Foundations', 'Pass GDPR & Data Protection Certification', 'Attend Live Q&A Session'],
     isCompleted: false,
     rewards: ['Cultural Foundations Badge', '10 Learning Points'],
     milestoneOrder: 1,
@@ -503,7 +503,7 @@ const AssessmentDashboard: React.FC = () => {
           </div>
         </NeumorphicCard>
 
-        {/* Cultural Score */}
+        {/* Cultural Competency Score */}
         <NeumorphicCard className="p-6 space-y-3">
           <div className="flex flex-col items-center space-y-3">
             <div className="p-3 rounded-lg bg-purple-100">
@@ -512,7 +512,7 @@ const AssessmentDashboard: React.FC = () => {
             <span className="text-4xl font-bold text-purple-600">{learningPath.culturalCompetencyScore}</span>
           </div>
           <div className="text-center">
-            <p className="text-sm font-semibold text-css-charcoal">Cultural Score</p>
+            <p className="text-sm font-semibold text-css-charcoal">Cultural Competency Score</p>
             <p className="text-xs text-css-grey-dark">Target: 85+</p>
           </div>
         </NeumorphicCard>

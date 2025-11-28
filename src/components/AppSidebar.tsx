@@ -15,7 +15,9 @@ import {
   BookMarked,
   Sparkles,
   TrendingUp,
-  FileCode2
+  FileCode2,
+  Map,
+  Rocket
 } from "lucide-react";
 
 import {
@@ -52,6 +54,8 @@ const employeeNavItems = [
   { title: "Dashboard", url: "/employee", icon: BarChart3 },
   { title: "Onboarding Assessment", url: "/employee/onboarding", icon: Sparkles },
   { title: "My Learning Path", url: "/employee/learning-path", icon: TrendingUp },
+  { title: "Cultural Journey Map", url: "/employee/cultural-journey", icon: Map },
+  { title: "Coming Soon", url: "/employee/coming-soon", icon: Rocket, badge: "NEW" },
   { title: "Training Center", url: "/employee/training", icon: BookOpen },
   { title: "Clinify AI", url: "/employee/ai-guru", icon: ClinifyAIIcon },
   { title: "Medical Abbreviations", url: "/employee/abbreviations", icon: BookMarked },
@@ -153,6 +157,21 @@ export function AppSidebar() {
       collapsible="icon"
     >
       <SidebarHeader className="border-b border-border">
+        {/* C-Smart Logo */}
+        <div className="flex items-center justify-center p-3 border-b border-border/50">
+          {isCollapsed ? (
+            <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-amber-500 rounded-lg flex items-center justify-center">
+              <span className="text-slate-900 font-bold text-xs">C</span>
+            </div>
+          ) : (
+            <img
+              src="/images/logos/csmart-logo.svg"
+              alt="C-Smart"
+              className="h-8 w-auto"
+            />
+          )}
+        </div>
+        {/* User Info */}
         <div className="flex items-center gap-3 p-4">
           <Avatar className="h-10 w-10">
             <AvatarImage
@@ -200,8 +219,13 @@ export function AppSidebar() {
                     <NavLink to={item.url} className="flex items-center gap-3 w-full">
                       <item.icon className="h-5 w-5 shrink-0" />
                       {!isCollapsed && (
-                        <span className="font-montserrat font-medium">
+                        <span className="font-montserrat font-medium flex-1">
                           {item.title}
+                        </span>
+                      )}
+                      {!isCollapsed && 'badge' in item && item.badge && (
+                        <span className="px-1.5 py-0.5 text-[10px] font-bold rounded bg-gradient-to-r from-purple-500 to-pink-500 text-white animate-pulse">
+                          {item.badge}
                         </span>
                       )}
                     </NavLink>

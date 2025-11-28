@@ -116,7 +116,7 @@ export const generateMockLearningPath = (assessmentData: AssessmentData): {
         'EHR Systems': 'technical',
         'Medical Equipment': 'technical',
         'Documentation': 'technical',
-        'HIPAA/Privacy': 'compliance',
+        'GDPR & Data Protection': 'compliance',
         'Infection Control': 'compliance',
         'Safety Protocols': 'compliance',
       };
