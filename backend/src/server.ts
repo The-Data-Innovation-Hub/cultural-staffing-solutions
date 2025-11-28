@@ -58,6 +58,13 @@ db.query('SELECT NOW()', (err, res) => {
 // Allow multiple frontend origins
 const allowedOrigins = [
   'http://localhost:8080',
+  'http://localhost:5173',
+  // Production domains
+  'https://culturalstaffingsolutions.com',
+  'https://www.culturalstaffingsolutions.com',
+  // Azure Static Web Apps
+  'https://brave-beach-03ccc4a03.1.azurestaticapps.net',
+  // Legacy domains (can remove later)
   'https://www.clinify.agency',
   'https://clinify.agency',
   'https://cultural-staffing-solutions.vercel.app',
