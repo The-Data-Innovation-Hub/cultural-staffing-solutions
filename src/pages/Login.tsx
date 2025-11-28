@@ -1,14 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useUser as useStackUser } from "@stackframe/react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, AlertCircle, Mail, User, Shield, Crown, Lock } from "lucide-react";
-import { stackClientApp } from "@/lib/stack";
-import { getUserProfile, upsertUserProfile } from "@/lib/neonDataApi";
 
 // Demo users for quick login
 const DEMO_USERS = [
@@ -37,39 +34,19 @@ const DEMO_USERS = [
 
 const Login = () => {
   const navigate = useNavigate();
-  const { isSignedIn, user } = useAuth();
-  const stackUser = useStackUser();
+  const { isSignedIn, user, signIn } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
 
-  // Check if Neon Auth is configured
-  const isNeonAuthConfigured = !!import.meta.env.VITE_STACK_PROJECT_ID;
-
   useEffect(() => {
-    // Handle Neon Auth user redirect
-    if (stackUser) {
-      // Determine role from email for demo users
-      const email = stackUser.primaryEmail?.toLowerCase() || '';
-      let role = 'employee';
-      
-      if (email.includes('admin')) {
-        role = 'admin';
-      } else if (email.includes('manager')) {
-        role = 'manager';
-      }
-      
-      navigate(`/${role}`);
-      return;
-    }
-    
-    // Handle legacy auth user redirect
+    // Redirect if already signed in
     if (isSignedIn && user) {
       navigate(`/${user.role}`);
     }
-  }, [isSignedIn, user, stackUser, navigate]);
+  }, [isSignedIn, user, navigate]);
 
   const handleQuickLogin = (demoUser: typeof DEMO_USERS[0]) => {
     setSelectedUser(demoUser.email);
@@ -84,30 +61,8 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      // Use Stack Auth to sign in with email/password
-      const result = await stackClientApp.signInWithCredential({
-        email,
-        password,
-      });
-
-      if (result.status === 'error') {
-        setError(result.error?.message || 'Invalid email or password');
-      } else if (result.status === 'ok' && result.user) {
-        // Ensure user profile exists with correct role
-        const demoUser = DEMO_USERS.find(u => u.email.toLowerCase() === email.toLowerCase());
-        if (demoUser) {
-          // Create/update profile with demo user role
-          try {
-            await upsertUserProfile({
-              id: result.user.id,
-              role: demoUser.role.toLowerCase() as 'employee' | 'manager' | 'admin',
-            });
-          } catch (profileErr) {
-            console.warn('Could not update user profile:', profileErr);
-          }
-        }
-      }
-      // If successful, the useEffect will handle the redirect
+      await signIn(email, password);
+      // Redirect will happen via useEffect when isSignedIn changes
     } catch (err: any) {
       console.error('Sign in error:', err);
       setError(err.message || 'Invalid email or password. Please try again.');
@@ -248,12 +203,6 @@ const Login = () => {
                 "Sign In"
               )}
             </Button>
-
-            {isNeonAuthConfigured && (
-              <p className="text-center text-xs text-slate-400 mt-2">
-                Secure authentication powered by Neon
-              </p>
-            )}
           </form>
         </div>
 

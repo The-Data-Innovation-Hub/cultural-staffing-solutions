@@ -1,100 +1,45 @@
 /**
- * Hook for managing user profiles via Neon Data API
+ * Hook for managing user profiles
  * 
- * This hook fetches and manages user profile data (role, department, etc.)
- * that extends the basic Neon Auth user data.
+ * This hook provides access to the current user's profile data
+ * from the JWT auth context.
  */
 
-import { useState, useEffect, useCallback } from 'react';
-import { useUser as useStackUser } from '@stackframe/react';
-import { 
-  getUserProfile, 
-  upsertUserProfile, 
-  getFullUser,
-  UserProfile, 
-  FullUser 
-} from '@/lib/neonDataApi';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface UseUserProfileResult {
-  profile: UserProfile | null;
-  fullUser: FullUser | null;
+  profile: {
+    id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    role: 'employee' | 'manager' | 'admin';
+    profileImage?: string;
+    department?: string;
+    location?: string;
+  } | null;
   isLoading: boolean;
   error: string | null;
   refetch: () => Promise<void>;
-  updateProfile: (data: Partial<UserProfile>) => Promise<void>;
 }
 
 export function useUserProfile(): UseUserProfileResult {
-  const stackUser = useStackUser();
-  const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [fullUser, setFullUser] = useState<FullUser | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchProfile = useCallback(async () => {
-    if (!stackUser?.id) {
-      setProfile(null);
-      setFullUser(null);
-      setIsLoading(false);
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      // Fetch both profile and full user data
-      const [profileData, fullUserData] = await Promise.all([
-        getUserProfile(stackUser.id),
-        getFullUser(stackUser.id),
-      ]);
-
-      setProfile(profileData);
-      setFullUser(fullUserData);
-    } catch (err) {
-      console.error('Error fetching user profile:', err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch profile');
-    } finally {
-      setIsLoading(false);
-    }
-  }, [stackUser?.id]);
-
-  const updateProfile = useCallback(async (data: Partial<UserProfile>) => {
-    if (!stackUser?.id) {
-      throw new Error('No user logged in');
-    }
-
-    setError(null);
-
-    try {
-      const updated = await upsertUserProfile({
-        id: stackUser.id,
-        ...data,
-      });
-      setProfile(updated);
-      
-      // Refetch full user to get updated combined data
-      const fullUserData = await getFullUser(stackUser.id);
-      setFullUser(fullUserData);
-    } catch (err) {
-      console.error('Error updating profile:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Failed to update profile';
-      setError(errorMessage);
-      throw new Error(errorMessage);
-    }
-  }, [stackUser?.id]);
-
-  useEffect(() => {
-    fetchProfile();
-  }, [fetchProfile]);
+  const { user, isLoaded, refreshUser } = useAuth();
 
   return {
-    profile,
-    fullUser,
-    isLoading,
-    error,
-    refetch: fetchProfile,
-    updateProfile,
+    profile: user ? {
+      id: user.id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      role: user.role,
+      profileImage: user.profileImage,
+      department: user.department,
+      location: user.location,
+    } : null,
+    isLoading: !isLoaded,
+    error: null,
+    refetch: refreshUser,
   };
 }
 
@@ -102,9 +47,8 @@ export function useUserProfile(): UseUserProfileResult {
  * Hook to get just the user's role
  */
 export function useUserRole(): 'employee' | 'manager' | 'admin' {
-  const { profile } = useUserProfile();
-  return profile?.role || 'employee';
+  const { user } = useAuth();
+  return user?.role || 'employee';
 }
 
 export default useUserProfile;
-
