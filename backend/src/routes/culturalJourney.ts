@@ -1,11 +1,11 @@
 import { Router, Request, Response } from 'express';
 import { db } from '../server';
-import { authenticateToken } from '../middleware/auth';
+import { requireAuth } from '../middleware/auth';
 
 const router = Router();
 
 // All routes require authentication
-router.use(authenticateToken);
+router.use(requireAuth);
 
 // =====================================================
 // GET /api/cultural-journey/progress

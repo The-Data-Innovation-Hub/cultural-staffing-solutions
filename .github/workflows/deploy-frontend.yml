@@ -1,14 +1,18 @@
-name: Deploy Frontend to Vercel
+name: Deploy Frontend to Vercel (DISABLED - Using Azure Static Web Apps)
+
+# DISABLED: Frontend now deploys to Azure Static Web Apps
+# See: azure-static-web-apps-brave-beach-03ccc4a03.yml
+# Azure URL: https://brave-beach-03ccc4a03.1.azurestaticapps.net
 
 on:
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - 'backend/**'
-      - 'docs/**'
-      - '**.md'
-  workflow_dispatch:
+  workflow_dispatch:  # Manual trigger only if needed
+  # push:
+  #   branches:
+  #     - main
+  #   paths-ignore:
+  #     - 'backend/**'
+  #     - 'docs/**'
+  #     - '**.md'
 
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
