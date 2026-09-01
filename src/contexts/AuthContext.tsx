@@ -1,5 +1,39 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { login as dbLogin, logout as dbLogout, User, isAuthenticated } from '@/services/authService';
+import { User } from '@/services/authService';
+
+// ── DEMO MODE ────────────────────────────────────────────────────────────────
+// No backend required: sign-in is validated locally against demo accounts.
+const DEMO_PASSWORD = 'password123';
+
+const DEMO_USERS: Record<string, User> = {
+  'employee@culturalstaffing.com': {
+    id: 'demo-employee',
+    email: 'employee@culturalstaffing.com',
+    firstName: 'Sarah',
+    lastName: "O'Connor",
+    role: 'employee',
+    department: 'Nursing',
+    location: 'Dublin, Ireland',
+  },
+  'manager@culturalstaffing.com': {
+    id: 'demo-manager',
+    email: 'manager@culturalstaffing.com',
+    firstName: 'David',
+    lastName: 'Byrne',
+    role: 'manager',
+    department: 'Workforce Development',
+    location: 'Cork, Ireland',
+  },
+  'admin@culturalstaffing.com': {
+    id: 'demo-admin',
+    email: 'admin@culturalstaffing.com',
+    firstName: 'Aoife',
+    lastName: 'Murphy',
+    role: 'admin',
+    department: 'Platform Administration',
+    location: 'Dublin, Ireland',
+  },
+};
 
 interface AuthContextType {
   isLoaded: boolean;
@@ -18,11 +52,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    // Check for JWT token and stored user
+    // DEMO MODE: session is a locally stored demo profile only.
     const storedUser = localStorage.getItem('authUser');
-    const hasToken = isAuthenticated();
 
-    if (hasToken && storedUser) {
+    if (storedUser) {
       try {
         setUser(JSON.parse(storedUser));
         setIsSignedIn(true);
@@ -30,60 +63,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.error('Error parsing stored user:', error);
         localStorage.removeItem('authUser');
       }
-    } else if (!hasToken && storedUser) {
-      // Token expired but user data still exists - clear it
-      localStorage.removeItem('authUser');
     }
     setIsLoaded(true);
   }, []);
 
   const signIn = async (email: string, password: string) => {
-    const result = await dbLogin({ email, password });
+    const demoUser = DEMO_USERS[email.trim().toLowerCase()];
 
-    if (result.success && result.user) {
-      setUser(result.user);
-      setIsSignedIn(true);
-      localStorage.setItem('authUser', JSON.stringify(result.user));
-    } else {
-      throw new Error(result.error || 'Invalid credentials');
+    if (!demoUser || password !== DEMO_PASSWORD) {
+      throw new Error('Invalid email or password. Use a demo account with password: password123');
     }
+
+    setUser(demoUser);
+    setIsSignedIn(true);
+    localStorage.setItem('authUser', JSON.stringify(demoUser));
   };
 
   const signOut = async () => {
-    try {
-      // Call backend logout to clear JWT cookies
-      await dbLogout();
-    } catch (error) {
-      console.error('Error during logout:', error);
-    } finally {
-      // Always clear local state regardless of API call result
-      setUser(null);
-      setIsSignedIn(false);
-      localStorage.removeItem('authUser');
-    }
+    setUser(null);
+    setIsSignedIn(false);
+    localStorage.removeItem('authUser');
   };
 
   const refreshUser = async () => {
-    try {
-      console.log('🔄 Refreshing user data...');
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/auth/me`, {
-        method: 'GET',
-        credentials: 'include',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-        }
-      });
-
-      if (response.ok) {
-        const userData = await response.json();
-        console.log('✅ User data refreshed:', userData);
-        setUser(userData);
-        localStorage.setItem('authUser', JSON.stringify(userData));
-      } else {
-        console.error('❌ Failed to refresh user:', response.status, response.statusText);
+    // DEMO MODE: nothing to refresh, profile is local.
+    const storedUser = localStorage.getItem('authUser');
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch {
+        localStorage.removeItem('authUser');
       }
-    } catch (error) {
-      console.error('❌ Error refreshing user:', error);
     }
   };
 
