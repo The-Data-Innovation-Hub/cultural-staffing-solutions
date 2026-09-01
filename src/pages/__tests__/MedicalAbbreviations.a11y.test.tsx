@@ -173,8 +173,7 @@ describe('MedicalAbbreviations Accessibility Tests', () => {
       await user.type(searchInput, 'MI');
 
       await waitForDataLoad();
-        expect(screen.getByLabelText(/clear search/i)).toBeInTheDocument();
-      }, { timeout: 400 });
+      expect(screen.getByLabelText(/clear search/i)).toBeInTheDocument();
     });
 
     it('should have proper role on modal dialog', async () => {
