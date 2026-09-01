@@ -356,9 +356,8 @@ describe('MedicalAbbreviations Accessibility Tests', () => {
       await user.type(searchInput, 'MI');
 
       await waitForDataLoad();
-        // Results should update
-        expect(screen.getByText(/Showing 1 of 5/i)).toBeInTheDocument();
-      }, { timeout: 500 });
+      // Results should update
+      expect(screen.getByText(/Showing 1 of 5/i)).toBeInTheDocument();
 
       // Check for aria-live region
       const liveRegion = container.querySelector('[aria-live]');
