@@ -480,10 +480,9 @@ describe('MedicalAbbreviations Accessibility Tests', () => {
       await user.type(searchInput, 'ZZZZZ');
 
       await waitForDataLoad();
-        const emptyMessage = screen.getByText(/No abbreviations found/i);
-        expect(emptyMessage).toBeInTheDocument();
-        expect(emptyMessage).toBeVisible();
-      }, { timeout: 500 });
+      const emptyMessage = screen.getByText(/No abbreviations found/i);
+      expect(emptyMessage).toBeInTheDocument();
+      expect(emptyMessage).toBeVisible();
     });
 
     it('should have accessible loading state', () => {
