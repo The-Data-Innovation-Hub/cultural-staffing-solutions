@@ -222,8 +222,7 @@ describe('MedicalAbbreviations Accessibility Tests', () => {
         await user.click(miCard);
 
         await waitForDataLoad();
-          expect(miCard).toHaveAttribute('aria-expanded', 'true');
-        });
+        expect(miCard).toHaveAttribute('aria-expanded', 'true');
       }
     });
   });
