@@ -18,6 +18,7 @@ export type AssessmentStepId =
   | 'cultural'
   | 'skills'
   | 'learning-style'
+  | 'sentiment'
   | 'results';
 
 export type UserRole =
@@ -211,6 +212,7 @@ export interface LearningPath {
   // Adaptive features
   estimatedCompletionTime?: number; // in weeks
   difficultyLevel: 'beginner' | 'intermediate' | 'advanced';
+  status?: string;
   customizations?: PathCustomization[];
 
   // Optional/backward-compatible fields

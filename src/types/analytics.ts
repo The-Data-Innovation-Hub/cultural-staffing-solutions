@@ -296,25 +296,3 @@ export interface AIInsight {
   createdAt: Date;
 }
 
-// ============================================================================
-// Export all types
-// ============================================================================
-
-export type {
-  PerformanceMetrics,
-  PerformanceGoal,
-  SkillGapAnalysis,
-  SkillArea,
-  TrainingEffectivenessMetrics,
-  LearnerEngagement,
-  SentimentAnalysis,
-  EmployeeFeedback,
-  RetentionPrediction,
-  RetentionFactor,
-  RetentionIntervention,
-  RetentionDataPoint,
-  AnalyticsDashboard,
-  TrendData,
-  AnalyticsAlert,
-  AIInsight,
-};
