@@ -48,6 +48,8 @@ export interface SubmitAssessmentRequest {
   skillRatings: Record<string, number>;
   learningPreferences: LearningPreferences;
   assessmentState: AssessmentState;
+  sentimentData?: unknown;
+  analyticsData?: unknown;
 }
 
 export interface SubmitAssessmentResponse {

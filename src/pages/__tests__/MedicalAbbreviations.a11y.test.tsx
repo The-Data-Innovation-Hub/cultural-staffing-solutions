@@ -173,8 +173,7 @@ describe('MedicalAbbreviations Accessibility Tests', () => {
       await user.type(searchInput, 'MI');
 
       await waitForDataLoad();
-        expect(screen.getByLabelText(/clear search/i)).toBeInTheDocument();
-      }, { timeout: 400 });
+      expect(screen.getByLabelText(/clear search/i)).toBeInTheDocument();
     });
 
     it('should have proper role on modal dialog', async () => {
@@ -222,8 +221,7 @@ describe('MedicalAbbreviations Accessibility Tests', () => {
         await user.click(miCard);
 
         await waitForDataLoad();
-          expect(miCard).toHaveAttribute('aria-expanded', 'true');
-        });
+        expect(miCard).toHaveAttribute('aria-expanded', 'true');
       }
     });
   });
@@ -357,9 +355,8 @@ describe('MedicalAbbreviations Accessibility Tests', () => {
       await user.type(searchInput, 'MI');
 
       await waitForDataLoad();
-        // Results should update
-        expect(screen.getByText(/Showing 1 of 5/i)).toBeInTheDocument();
-      }, { timeout: 500 });
+      // Results should update
+      expect(screen.getByText(/Showing 1 of 5/i)).toBeInTheDocument();
 
       // Check for aria-live region
       const liveRegion = container.querySelector('[aria-live]');
@@ -482,10 +479,9 @@ describe('MedicalAbbreviations Accessibility Tests', () => {
       await user.type(searchInput, 'ZZZZZ');
 
       await waitForDataLoad();
-        const emptyMessage = screen.getByText(/No abbreviations found/i);
-        expect(emptyMessage).toBeInTheDocument();
-        expect(emptyMessage).toBeVisible();
-      }, { timeout: 500 });
+      const emptyMessage = screen.getByText(/No abbreviations found/i);
+      expect(emptyMessage).toBeInTheDocument();
+      expect(emptyMessage).toBeVisible();
     });
 
     it('should have accessible loading state', () => {
