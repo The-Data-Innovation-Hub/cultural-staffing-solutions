@@ -49,6 +49,7 @@ export interface SubmitAssessmentRequest {
   learningPreferences: LearningPreferences;
   assessmentState: AssessmentState;
   sentimentData?: unknown;
+  analyticsData?: unknown;
 }
 
 export interface SubmitAssessmentResponse {
