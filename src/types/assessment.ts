@@ -223,6 +223,12 @@ export interface PriorityArea {
   currentLevel: number; // 0-100
   targetLevel: number; // 0-100
   estimatedTimeToTarget: number; // in weeks
+
+  // Optional/backward-compatible fields
+  learningPathId?: string;
+  estimatedTimeWeeks?: number;
+  isCompleted?: boolean;
+  priorityOrder?: number;
 }
 
 export interface RecommendedCourse {
