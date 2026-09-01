@@ -204,14 +204,24 @@ export interface LearningPath {
   skillsScore: number;
 
   // Personalized recommendations
-  priorityAreas: PriorityArea[];
-  recommendedCourses: RecommendedCourse[];
-  milestones: Milestone[];
+  priorityAreas?: PriorityArea[];
+  recommendedCourses?: RecommendedCourse[];
+  milestones?: Milestone[];
 
   // Adaptive features
-  estimatedCompletionTime: number; // in weeks
+  estimatedCompletionTime?: number; // in weeks
   difficultyLevel: 'beginner' | 'intermediate' | 'advanced';
-  customizations: PathCustomization[];
+  customizations?: PathCustomization[];
+
+  // Optional/backward-compatible fields
+  assessmentId?: string;
+  pathName?: string;
+  pathDescription?: string;
+  estimatedCompletionWeeks?: number;
+  progressPercentage?: number;
+  isActive?: boolean;
+  startedAt?: string;
+  completedAt?: string;
 }
 
 export interface PriorityArea {
@@ -222,7 +232,7 @@ export interface PriorityArea {
   importance: 'critical' | 'high' | 'medium' | 'low';
   currentLevel: number; // 0-100
   targetLevel: number; // 0-100
-  estimatedTimeToTarget: number; // in weeks
+  estimatedTimeToTarget?: number; // in weeks
 
   // Optional/backward-compatible fields
   learningPathId?: string;
@@ -233,11 +243,11 @@ export interface PriorityArea {
 
 export interface RecommendedCourse {
   id: string;
-  title: string;
-  description: string;
+  title?: string;
+  description?: string;
   category: string;
-  duration: number; // in minutes
-  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  duration?: number; // in minutes
+  difficulty?: 'beginner' | 'intermediate' | 'advanced';
   contentTypes: ContentType[];
   priorityOrder: number;
   isRequired: boolean;
@@ -252,6 +262,8 @@ export interface RecommendedCourse {
   completedAt?: string;
 
   // Alternative property names for backward compatibility
+  learningPathId?: string;
+  courseId?: string;
   courseTitle?: string;
   courseDescription?: string;
   durationMinutes?: number;
@@ -263,10 +275,21 @@ export interface Milestone {
   title: string;
   description: string;
   targetDate: string;
-  completed: boolean;
+  completed?: boolean;
   completedDate?: string;
-  associatedCourses: string[]; // course IDs
+  associatedCourses?: string[]; // course IDs
   rewards?: string[];
+
+  // Optional/backward-compatible fields
+  learningPathId?: string;
+  milestoneType?: string;
+  scheduledWeek?: number;
+  isCompleted?: boolean;
+  completedAt?: string;
+  milestoneOrder?: number;
+  associatedCourseIds?: string[];
+  requiredActivities?: string[];
+  badgeAwarded?: string;
 }
 
 export interface PathCustomization {
